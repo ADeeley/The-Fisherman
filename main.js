@@ -41,6 +41,7 @@ function Game() {
         this.drawBackground();
         boat.draw();
         boat.move();
+        hook.draw();
     }
     this.deathScreen = function() {
         ctx.font = "40pt Ariel";
@@ -113,6 +114,9 @@ function keyDownEventHandler(e) {
         else if (e.keyCode == keys.D_Key) {
             keyDown.right = true;
         }
+        else if (e.keyCode == keys.SPACE) {
+            hook.drop();
+        } 
     }
     else if (stateHandler.deathSequence) {
         if (e.keyCode == keys.SPACE) {
@@ -133,15 +137,14 @@ function keyUpEventHandler(e) {
 }
 
 function Boat() {
-    this.x         = canvas.width/2;
-    this.y         = canvas.height/2;
-    this.height    = 30;
-    this.speed     = 3;
+    this.x              = canvas.width/2;
+    this.y              = canvas.height/2;
+    this.height         = 30;
+    this.speed          = 3;
     // 0 represents left, 1 represents right
-    this.direction = 0;
-
+    this.direction      = 0;
     //Boat sprite setup
-    this.boatSprite = new Image();
+    this.boatSprite     = new Image();
     this.boatSprite.src = "boat.bmp";
 
     this.draw = function() {
@@ -175,6 +178,45 @@ function Boat() {
 }
 
 function Hook() {
+    this.hookSprite     = new Image();
+    this.hookSprite.src = "hook.bmp";
+    this.dropped        = false;
+    this.raising        = false;
+    this.spriteHeight   = 248;
+
+    //Keep a track of the rope length
+    this.height         = 20;
+    
+    this.drop = function(){
+        this.dropped = true;
+        console.log("Drop");
+    }
+    this.draw = function(){
+        if (this.dropped) {
+            ctx.drawImage(this.hookSprite, 0, this.spriteHeight - this.height, 20, 
+                          this.height, boat.x, boat.y, 20, this.height);
+        }
+        // Move the hook up and down
+        if (this.height < this.spriteHeight && this.dropped && !this.raising) {
+            this.height++;
+            console.log("increment height");
+        }
+        else if (this.dropped && this.raising) {
+            this.height--;
+            console.log("decrement height");
+        }
+        
+        // Raise the hook upon reaching the sea bed
+        if (this.height >= canvas.height/2 && this.dropped) {
+            this.raising = true;
+        }
+
+        // Reset the hook upon reaching the boat again
+        if (this.height <= 0 && this.dropped) {
+            this.dropped = false;
+            this.raising = false;
+        }
+    }
 
 }
 
@@ -182,12 +224,14 @@ function Hook() {
 var stateHandler;
 var game;
 var boat;
+var hook;
 
 function setup() {
     // Object instantiations
     stateHandler = new StateHandler();
     game         = new Game();
     boat         = new Boat();
+    hook         = new Hook();
 
 }
 
