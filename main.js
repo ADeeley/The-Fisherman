@@ -1,9 +1,20 @@
 var canvas     = document.getElementById("myCanvas");
 var ctx        = canvas.getContext("2d");
 
-window.addEventListener("keydown", eventHandler, false);
+window.addEventListener("keydown", keyDownEventHandler, false);
+window.addEventListener("keyup", keyUpEventHandler, false);
 
+var keyDown = {
+    /**
+     * Keeps a track of buttons being held down
+     */
+    left  : false,
+    right : false
+}
 var keys = {
+    /**
+     * An enumeration for key codes
+     */
     SPACE     : 32,
     A_KEY     : 65,
     D_Key     : 68,
@@ -26,6 +37,7 @@ function Game() {
     this.gameLoop = function() {
         this.drawBackground();
         boat.draw();
+        boat.move();
     }
     this.deathScreen = function() {
         ctx.font = "40pt Ariel";
@@ -80,7 +92,7 @@ function StateHandler() {
     }
 }
 
-function eventHandler(e) {
+function keyDownEventHandler(e) {
     /**
      * Chooses the correct keyevents depending upon the current state
      */
@@ -93,15 +105,27 @@ function eventHandler(e) {
     }
     else if (stateHandler.gameLoop) {
         if (e.keyCode == keys.A_KEY) {
-            boat.moveLeft();
+            keyDown.left = true;
         }
         else if (e.keyCode == keys.D_Key) {
-            boat.moveRight();
+            keyDown.right = true;
         }
     }
     else if (stateHandler.deathSequence) {
         if (e.keyCode == keys.SPACE) {
         }
+    }
+}
+
+function keyUpEventHandler(e) {
+    /**
+     * Reverts the relevant keys in keyDown dict to false when the button is released
+     */
+    if (e.keyCode == keys.A_KEY) {
+        keyDown.left = false;
+    }
+    else if (e.keyCode == keys.D_Key) {
+        keyDown.right = false;
     }
 }
 
@@ -120,13 +144,15 @@ function Boat() {
         ctx.drawImage(this.boatSprite, this.x, this.y - this.height);
     }
     
-    this.moveLeft = function() {
-        this.x -= this.speed;
+    this.move = function() {
+        if (keyDown.left) {
+        this.x--;
         console.log("left");
-    }
-    this.moveRight = function() {
-        this.x += this.speed;
-        console.log("right");
+        }
+        else if (keyDown.right) {
+        this.x++;
+        console.log("left");
+        }
     }
 }
 
