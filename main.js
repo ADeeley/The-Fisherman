@@ -28,6 +28,9 @@ gradient.addColorStop(0, "#1658EA");
 gradient.addColorStop(1, "black");
 
 function Game() {
+    /**
+     * The main game loop
+     */
     this.startScreen = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.drawBackground();
@@ -134,26 +137,45 @@ function Boat() {
     this.y         = canvas.height/2;
     this.height    = 30;
     this.speed     = 3;
+    // 0 represents left, 1 represents right
+    this.direction = 0;
 
-       
     //Boat sprite setup
     this.boatSprite = new Image();
     this.boatSprite.src = "boat.bmp";
 
     this.draw = function() {
-        ctx.drawImage(this.boatSprite, this.x, this.y - this.height);
+        if (this.direction == 0) {
+            //Draw left sprite
+            ctx.drawImage(this.boatSprite, 0, 0, 50, 30, 
+                          this.x, this.y - this.height, 50, 30);
+        }
+        else if (this.direction == 1) {
+            //Draw right sprite
+            ctx.drawImage(this.boatSprite, 50, 0, 50, 30, 
+                          this.x, this.y - this.height, 50, 30);
+        }
     }
     
     this.move = function() {
         if (keyDown.left) {
         this.x--;
         console.log("left");
+            if (this.direction != 0) {
+                this.direction = 0;
+            }
         }
         else if (keyDown.right) {
         this.x++;
-        console.log("left");
+            if (this.direction != 1) {
+                this.direction = 1;
+            }
         }
     }
+}
+
+function Hook() {
+
 }
 
 // Object assignments to variables
