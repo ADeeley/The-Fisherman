@@ -228,11 +228,37 @@ function Fish(x, y, w, h, sprite) {
     this.w      = w;
     this.h      = h; 
     this.sprite = sprite;
+    this.dir    = 1;
+
+    this.move = function() {
+        // Swim the fish in the specified direction
+        if (this.x >= 0 && this.x <= canvas.width - this.w) {
+            if (this.dir == 1) {
+                this.x++;
+            }
+            else if (this.dir == -1) {
+                this.x--;
+            }
+
+            // Randomly change direction
+            if (Math.random() > 0.99) {
+                this.dir *= -1;
+            }
+        }
+        else {
+            this.dir *= -1;
+            if (this.dir == 1) {
+                this.x++;
+            }
+            else if (this.dir == -1) {
+                this.x--;
+            }
+        }
+    }
 
     this.draw = function() {
         ctx.drawImage(this.sprite, this.x, this.y, this.w, this.h);
-
-
+        this.move();
     }
 }
 
