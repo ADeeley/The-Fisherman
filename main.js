@@ -222,30 +222,30 @@ function Hook() {
 
 }
 
-function Fish(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h; 
+function Fish(x, y, w, h, sprite) {
+    this.x      = x;
+    this.y      = y;
+    this.w      = w;
+    this.h      = h; 
+    this.sprite = sprite;
 
     this.draw = function() {
-        ctx.beginPath()
-        ctx.rect(this.x, this.y, this.w, this.h)
-        ctx.fillStyle = "#ffffff";
-        ctx.fill();
-        ctx.closePath();
+        ctx.drawImage(this.sprite, this.x, this.y, this.w, this.h);
+
 
     }
 }
 
 function Shoal(n) {
-    this.fish  = [];
-    this.count = n;
+    this.fish        = [];
+    this.count       = n;
+    this.sprite      = new Image();
+    this.sprite.src  = "goldfish.bmp";
 
     for (var i=0; i < this.count; i++) {
         this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
                                 Math.floor((Math.random() * (canvas.height/2-20)))
-                                + canvas.height/2, 30, 20))
+                                + canvas.height/2, 30, 20, this.sprite))
     }
 
     this.drawAll = function(){
