@@ -43,6 +43,7 @@ function Game() {
         boat.move();
         shoal.drawAll();
         hook.draw();
+        hook.collision();
     }
     this.deathScreen = function() {
         ctx.font = "40pt Ariel";
@@ -165,7 +166,7 @@ function Boat() {
     this.move = function() {
         if (keyDown.left && this.x >= 0) {
         this.x--;
-        console.log("left");
+        //console.log("left");
             if (this.direction != 0) {
                 this.direction = 0;
             }
@@ -185,13 +186,26 @@ function Hook() {
     this.dropped        = false;
     this.raising        = false;
     this.spriteHeight   = 248;
+    this.hookSz         = 20;
 
     //Keep a track of the rope length
     this.height         = 20;
     
     this.drop = function(){
         this.dropped = true;
-        console.log("Drop");
+        //console.log("Drop");
+    }
+        
+    this.collision = function() {
+        for (var i=0; i<shoal.fish.length; i++) {
+            var f   = shoal.fish[i];
+            var tip = boat.y + this.height;
+            if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
+                  tip < f.y || tip - this.hookSz > f.y + f.h)) {
+                      console.log("Caught one");
+                      f.caught = true;
+            }
+        }
     }
     this.draw = function(){
         if (this.dropped) {
@@ -201,11 +215,11 @@ function Hook() {
         // Move the hook up and down
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
             this.height++;
-            console.log("increment height");
+            //console.log("increment height");
         }
         else if (this.dropped && this.raising) {
             this.height--;
-            console.log("decrement height");
+            //console.log("decrement height");
         }
         
         // Raise the hook upon reaching the sea bed
@@ -229,9 +243,15 @@ function Fish(x, y, w, h, sprite) {
     this.h      = h; 
     this.sprite = sprite;
     this.dir    = 1;
+    this.caught = false;
 
     this.move = function() {
         // Swim the fish in the specified direction
+        if (this.caught) {
+            this.y = boat.y + hook.height; 
+            this.x = boat.x + boat.w/3;
+            console.log("Raising fishie!");
+        }
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
             if (this.dir == 1) {
                 this.x++;
