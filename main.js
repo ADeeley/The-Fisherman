@@ -28,6 +28,7 @@ gradient.addColorStop(0, "#1658EA");
 gradient.addColorStop(1, "black");
 
 function Game() {
+    this.score = 0;
     /**
      * The main game loop
      */
@@ -39,11 +40,11 @@ function Game() {
     }
     this.gameLoop = function() {
         this.drawBackground();
+        this.drawScore();
         boat.draw();
         boat.move();
         shoal.drawAll();
         hook.draw();
-        hook.collision();
     }
     this.deathScreen = function() {
         ctx.font = "40pt Ariel";
@@ -57,6 +58,8 @@ function Game() {
         ctx.fillText("You won!", canvas.width/4, canvas.height/4);
         this.drawBackground();
     }
+
+    // General methods
     this.drawBackground = function() {
         ctx.beginPath();
         ctx.rect(0, canvas.height/2, canvas.width, canvas.height);
@@ -69,6 +72,11 @@ function Game() {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillText("The", 20, canvas.height/2 - 5);
         ctx.fillText("Fisherman", 20, (canvas.height/2) + 40);
+    }
+    this.drawScore = function() {
+        ctx.font = "20pt Ariel";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(this.score, 20, 40);
     }
 }
 
@@ -200,6 +208,7 @@ function Hook() {
         for (var i=0; i<shoal.fish.length; i++) {
             var f   = shoal.fish[i];
             var tip = boat.y + this.height;
+
             if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
                   tip < f.y || tip - this.hookSz > f.y + f.h)) {
                       console.log("Caught one");
@@ -232,13 +241,17 @@ function Hook() {
         if (this.height <= 0 && this.dropped) {
             this.dropped = false;
             this.raising = false;
+
+            // Remove any caught fish from the shoal
             for (var i = 0; i<shoal.fish.length; i++) {
                 if (shoal.fish[i].caught) {
                     shoal.fish.splice(i, 1);
                     console.log("Sliced fish array");
+                    game.score++;
                 }
             }
         }
+        hook.collision();
     }
 
 }
@@ -314,6 +327,8 @@ function Shoal(n) {
     }
 
 }
+
+
 // Object assignments to variables
 var stateHandler;
 var game;
