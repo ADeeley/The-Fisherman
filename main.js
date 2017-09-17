@@ -41,6 +41,7 @@ function Game() {
         this.drawBackground();
         boat.draw();
         boat.move();
+        shoal.drawAll();
         hook.draw();
     }
     this.deathScreen = function() {
@@ -139,8 +140,9 @@ function keyUpEventHandler(e) {
 function Boat() {
     this.x              = canvas.width/2;
     this.y              = canvas.height/2;
-    this.height         = 30;
     this.speed          = 3;
+    this.w              = 50;
+    this.h              = 30;
     // 0 represents left, 1 represents right
     this.direction      = 0;
     //Boat sprite setup
@@ -150,13 +152,13 @@ function Boat() {
     this.draw = function() {
         if (this.direction == 0) {
             //Draw left sprite
-            ctx.drawImage(this.boatSprite, 0, 0, 50, 30, 
-                          this.x, this.y - this.height, 50, 30);
+            ctx.drawImage(this.boatSprite, 0, 0, this.w, this.h, 
+                          this.x, this.y - this.h, this.w, this.h);
         }
         else if (this.direction == 1) {
             //Draw right sprite
-            ctx.drawImage(this.boatSprite, 50, 0, 50, 30, 
-                          this.x, this.y - this.height, 50, 30);
+            ctx.drawImage(this.boatSprite, 50, 0, this.w, this.h, 
+                          this.x, this.y - this.h, this.w, this.h);
         }
     }
     
@@ -194,7 +196,7 @@ function Hook() {
     this.draw = function(){
         if (this.dropped) {
             ctx.drawImage(this.hookSprite, 0, this.spriteHeight - this.height, 20, 
-                          this.height, boat.x, boat.y, 20, this.height);
+                          this.height, boat.x + boat.w/3, boat.y, 20, this.height);
         }
         // Move the hook up and down
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
@@ -220,11 +222,45 @@ function Hook() {
 
 }
 
+function Fish(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h; 
+
+    this.draw = function() {
+        ctx.beginPath()
+        ctx.rect(this.x, this.y, this.w, this.h)
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.closePath();
+
+    }
+}
+
+function Shoal(n) {
+    this.fish  = [];
+    this.count = n;
+
+    for (var i=0; i < this.count; i++) {
+        this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
+                                Math.floor((Math.random() * (canvas.height/2-20)))
+                                + canvas.height/2, 30, 20))
+    }
+
+    this.drawAll = function(){
+        for (var i=0; i<this.count; i++) {
+            this.fish[i].draw();
+        }
+    }
+
+}
 // Object assignments to variables
 var stateHandler;
 var game;
 var boat;
 var hook;
+var shoal;
 
 function setup() {
     // Object instantiations
@@ -232,6 +268,7 @@ function setup() {
     game         = new Game();
     boat         = new Boat();
     hook         = new Hook();
+    shoal        = new Shoal(5);
 
 }
 
