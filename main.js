@@ -204,6 +204,7 @@ function Hook() {
                   tip < f.y || tip - this.hookSz > f.y + f.h)) {
                       console.log("Caught one");
                       f.caught = true;
+                      this.raising = true;
             }
         }
     }
@@ -231,6 +232,12 @@ function Hook() {
         if (this.height <= 0 && this.dropped) {
             this.dropped = false;
             this.raising = false;
+            for (var i = 0; i<shoal.fish.length; i++) {
+                if (shoal.fish[i].caught) {
+                    shoal.fish.splice(i, 1);
+                    console.log("Sliced fish array");
+                }
+            }
         }
     }
 
@@ -291,18 +298,17 @@ function Fish(x, y, w, h, sprite) {
 
 function Shoal(n) {
     this.fish        = [];
-    this.count       = n;
     this.sprite      = new Image();
     this.sprite.src  = "goldfish.bmp";
 
-    for (var i=0; i < this.count; i++) {
+    for (var i=0; i < n; i++) {
         this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
                                 Math.floor((Math.random() * (canvas.height/2-20)))
                                 + canvas.height/2, 30, 20, this.sprite))
     }
 
     this.drawAll = function(){
-        for (var i=0; i<this.count; i++) {
+        for (var i=0; i<this.fish.length; i++) {
             this.fish[i].draw();
         }
     }
