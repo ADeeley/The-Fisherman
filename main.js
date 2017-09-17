@@ -257,7 +257,14 @@ function Fish(x, y, w, h, sprite) {
     }
 
     this.draw = function() {
-        ctx.drawImage(this.sprite, this.x, this.y, this.w, this.h);
+        if (this.dir == 1) {
+            ctx.drawImage(this.sprite, this.w, 0, this.w, this.h, this.x, this.y, 
+                          this.w, this.h);
+        }
+        else {
+            ctx.drawImage(this.sprite, 0, 0, this.w, this.h, this.x, this.y, 
+                          this.w, this.h);
+        }
         this.move();
     }
 }
