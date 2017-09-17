@@ -163,14 +163,14 @@ function Boat() {
     }
     
     this.move = function() {
-        if (keyDown.left) {
+        if (keyDown.left && this.x >= 0) {
         this.x--;
         console.log("left");
             if (this.direction != 0) {
                 this.direction = 0;
             }
         }
-        else if (keyDown.right) {
+        else if (keyDown.right && this.x <= canvas.width - this.w) {
         this.x++;
             if (this.direction != 1) {
                 this.direction = 1;
