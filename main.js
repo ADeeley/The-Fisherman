@@ -78,6 +78,7 @@ function Game() {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillText(this.score, 20, 40);
     }
+
 }
 
 function StateHandler() {
@@ -195,6 +196,7 @@ function Hook() {
     this.raising        = false;
     this.spriteHeight   = 248;
     this.hookSz         = 20;
+    this.fishHooked     = false;
 
     //Keep a track of the rope length
     this.height         = 20;
@@ -205,15 +207,30 @@ function Hook() {
     }
         
     this.collision = function() {
-        for (var i=0; i<shoal.fish.length; i++) {
-            var f   = shoal.fish[i];
-            var tip = boat.y + this.height;
+        if (!this.fishHooked) {
+            for (var i=0; i<shoal.fish.length; i++) {
+                var f   = shoal.fish[i];
+                var tip = boat.y + this.height;
 
-            if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
-                  tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                      console.log("Caught one");
-                      f.caught = true;
-                      this.raising = true;
+                if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
+                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
+                          console.log("Caught one");
+                          f.caught = true;
+                          this.raising = true;
+                          this.fishHooked = true;
+                }
+            }
+            for (var i=0; i<shoal.evilFish.length; i++) {
+                var f   = shoal.evilFish[i];
+                var tip = boat.y + this.height;
+
+                if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
+                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
+                          console.log("Caught one");
+                          f.caught = true;
+                          this.raising = true;
+                          this.fishHooked = true;
+                }
             }
         }
     }
@@ -221,6 +238,7 @@ function Hook() {
         if (this.dropped) {
             ctx.drawImage(this.hookSprite, 0, this.spriteHeight - this.height, 20, 
                           this.height, boat.x + boat.w/3, boat.y, 20, this.height);
+            hook.collision();
         }
         // Move the hook up and down
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
@@ -241,11 +259,11 @@ function Hook() {
         if (this.height <= 0 && this.dropped) {
             this.dropped = false;
             this.raising = false;
+            this.fishHooked = false;
 
             // Remove any caught fish from the shoal
             shoal.removeFish();
         }
-        hook.collision();
     }
 
 }
@@ -278,14 +296,14 @@ function Fish(x, y, w, h, sprite) {
             if (Math.random() > 0.99) {
                 this.dir *= -1;
             }
-        }
+        } 
         else {
             this.dir *= -1;
             if (this.dir == 1) {
-                this.x++;
+                this.x += 2;
             }
             else if (this.dir == -1) {
-                this.x--;
+                this.x -= 2;
             }
         }
     }
@@ -344,6 +362,13 @@ function Shoal(n, e) {
                 game.score++;
             }
         }
+        for (var i = 0; i<this.evilFish.length; i++) {
+            if (this.evilFish[i].caught) {
+                this.evilFish.splice(i, 1);
+                console.log("Sliced fish array");
+                game.score--;
+            }
+        }
     }
 
 }
@@ -362,7 +387,7 @@ function setup() {
     game         = new Game();
     boat         = new Boat();
     hook         = new Hook();
-    shoal        = new Shoal(5, 1);
+    shoal        = new Shoal(8, 4);
 
 }
 
