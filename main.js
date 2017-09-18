@@ -45,18 +45,21 @@ function Game() {
         boat.move();
         shoal.drawAll();
         hook.draw();
+        // End the game if no good fish remain
+        if (shoal.fish.length == 0) {
+            stateHandler.victorySequence();
+        } 
     }
     this.deathScreen = function() {
         ctx.font = "40pt Ariel";
-        ctx.fillStyle = "#c2c4ae";
+        ctx.fillStyle = "#ffffff";
         ctx.fillText("You died!", canvas.width/4, canvas.height/4);
         this.drawBackground();
     }
-    this.victory = function() {
+    this.victoryScreen = function() {
         ctx.font = "40pt Ariel";
-        ctx.fillStyle = "#c2c4ae";
+        ctx.fillStyle = "#ffffff";
         ctx.fillText("You won!", canvas.width/4, canvas.height/4);
-        this.drawBackground();
     }
 
     // General methods
@@ -85,11 +88,13 @@ function StateHandler() {
     this.startScreen     = true;
     this.gameLoop        = false;
     this.dead            = false;
+    this.victory         = false;
 
     this.returnToStartScreen = function() {
         this.startScreen = true;
         this.gameLoop    = false;
         this.dead        = false;
+        this.victory     = false;
         //Reset all class instances to default
         setup();        
     }
@@ -98,12 +103,21 @@ function StateHandler() {
         this.startScreen = false;
         this.gameLoop    = true;
         this.dead        = false;
+        this.victory     = false;
     }
 
     this.deathSequence = function() {
         this.startScreen = false;
         this.gameLoop    = false;
         this.dead        = true;
+        this.victory     = false;
+    }
+
+    this.victorySequence = function() {
+        this.startScreen = false;
+        this.gameLoop    = false;
+        this.dead        = false;
+        this.victory     = true;
     }
 }
 
@@ -112,27 +126,23 @@ function keyDownEventHandler(e) {
      * Chooses the correct keyevents depending upon the current state
      */
     //Check the current state
-    if (stateHandler.startScreen) {
-
-        if (e.keyCode == keys.SPACE) {
+    if (e.keyCode == keys.SPACE) {
+        if (stateHandler.startScreen) {
             stateHandler.startGame();
         }
+        else if (stateHandler.gameLoop) {
+            hook.drop();
+        }
+        else if (stateHandler.victory) {
+            stateHandler.returnToStartScreen();
+        }
     }
-    else if (stateHandler.gameLoop) {
-        if (e.keyCode == keys.A_KEY) {
+    else if (e.keyCode == keys.A_KEY && stateHandler.gameLoop) {
             keyDown.left = true;
         }
-        else if (e.keyCode == keys.D_Key) {
+        else if (e.keyCode == keys.D_Key && stateHandler.gameLoop) {
             keyDown.right = true;
         }
-        else if (e.keyCode == keys.SPACE) {
-            hook.drop();
-        } 
-    }
-    else if (stateHandler.deathSequence) {
-        if (e.keyCode == keys.SPACE) {
-        }
-    }
 }
 
 function keyUpEventHandler(e) {
@@ -387,7 +397,7 @@ function setup() {
     game         = new Game();
     boat         = new Boat();
     hook         = new Hook();
-    shoal        = new Shoal(8, 4);
+    shoal        = new Shoal(1, 4);
 
 }
 
@@ -402,6 +412,9 @@ function draw() {
     }
     else if (stateHandler.dead) {
         game.deathScreen();
+    }
+    else if (stateHandler.victory) {
+        game.victoryScreen();
     }
 }
 
