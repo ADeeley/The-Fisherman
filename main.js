@@ -243,13 +243,7 @@ function Hook() {
             this.raising = false;
 
             // Remove any caught fish from the shoal
-            for (var i = 0; i<shoal.fish.length; i++) {
-                if (shoal.fish[i].caught) {
-                    shoal.fish.splice(i, 1);
-                    console.log("Sliced fish array");
-                    game.score++;
-                }
-            }
+            shoal.removeFish();
         }
         hook.collision();
     }
@@ -309,20 +303,46 @@ function Fish(x, y, w, h, sprite) {
     }
 }
 
-function Shoal(n) {
+
+function Shoal(n, e) {
     this.fish        = [];
+    this.evilFish    = [];
     this.sprite      = new Image();
     this.sprite.src  = "goldfish.bmp";
+    this.eSprite      = new Image();
+    this.eSprite.src  = "evilfish.bmp";
 
+    // Fill the fish array
     for (var i=0; i < n; i++) {
         this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
                                 Math.floor((Math.random() * (canvas.height/2-20)))
                                 + canvas.height/2, 30, 20, this.sprite))
     }
+    // Fill the evilFish array
+    for (var i=0; i < e; i++) {
+        this.evilFish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
+                                Math.floor((Math.random() * (canvas.height/2-20)))
+                                + canvas.height/2, 30, 20, this.eSprite))
+    }
 
     this.drawAll = function(){
         for (var i=0; i<this.fish.length; i++) {
             this.fish[i].draw();
+        }
+        for (var i=0; i<this.evilFish.length; i++) {
+            this.evilFish[i].draw();
+        }
+    }
+
+    this.removeFish = function(){
+    //Removes a fish from the relevant array
+
+        for (var i = 0; i<this.fish.length; i++) {
+            if (this.fish[i].caught) {
+                this.fish.splice(i, 1);
+                console.log("Sliced fish array");
+                game.score++;
+            }
         }
     }
 
@@ -342,7 +362,7 @@ function setup() {
     game         = new Game();
     boat         = new Boat();
     hook         = new Hook();
-    shoal        = new Shoal(5);
+    shoal        = new Shoal(5, 1);
 
 }
 
