@@ -167,7 +167,7 @@ function Boat() {
     this.direction      = 0;
     //Boat sprite setup
     this.boatSprite     = new Image();
-    this.boatSprite.src = "boat.bmp";
+    this.boatSprite.src = "boat.png";
 
     this.draw = function() {
         if (this.direction == 0) {
@@ -201,7 +201,7 @@ function Boat() {
 
 function Hook() {
     this.hookSprite     = new Image();
-    this.hookSprite.src = "hook.bmp";
+    this.hookSprite.src = "hook.png";
     this.dropped        = false;
     this.raising        = false;
     this.spriteHeight   = 248;
@@ -336,9 +336,9 @@ function Shoal(n, e) {
     this.fish        = [];
     this.evilFish    = [];
     this.sprite      = new Image();
-    this.sprite.src  = "goldfish.bmp";
+    this.sprite.src  = "goldfish.png";
     this.eSprite      = new Image();
-    this.eSprite.src  = "evilfish.bmp";
+    this.eSprite.src  = "evilfish.png";
 
     // Fill the fish array
     for (var i=0; i < n; i++) {
