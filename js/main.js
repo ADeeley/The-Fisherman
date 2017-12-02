@@ -1,5 +1,5 @@
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
 
 const MYAPP = {
     keyDown: {
@@ -40,13 +40,13 @@ MYAPP.stateToVictory = function() {
     setup();        
 }
 
-window.addEventListener("keydown", keyDownEventHandler, false);
-window.addEventListener("keyup", keyUpEventHandler, false);
+window.addEventListener('keydown', keyDownEventHandler, false);
+window.addEventListener('keyup', keyUpEventHandler, false);
 
 // Gradient variable for the ocean
 var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
-gradient.addColorStop(0, "#1658EA");
-gradient.addColorStop(1, "black");
+gradient.addColorStop(0, '#1658EA');
+gradient.addColorStop(1, 'black');
 
 function Game() {
     this.score = 0;
@@ -72,15 +72,15 @@ function Game() {
         } 
     }
     this.deathScreen = function() {
-        ctx.font = "40pt Ariel";
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText("You died!", canvas.width/4, canvas.height/4);
+        ctx.font = '40pt Ariel';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('You died!', canvas.width/4, canvas.height/4);
         this.drawBackground();
     }
     this.victoryScreen = function() {
-        ctx.font = "40pt Ariel";
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText("You won!", canvas.width/4, canvas.height/4);
+        ctx.font = '40pt Ariel';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('You won!', canvas.width/4, canvas.height/4);
     }
 
     // General methods
@@ -92,14 +92,14 @@ function Game() {
         ctx.closePath();
     }
     this.drawTitle = function() {
-        ctx.font = "40pt Ariel";
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillText("The", 20, canvas.height/2 - 5);
-        ctx.fillText("Fisherman", 20, (canvas.height/2) + 40);
+        ctx.font = '40pt Ariel';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText('The', 20, canvas.height/2 - 5);
+        ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
     }
     this.drawScore = function() {
-        ctx.font = "20pt Ariel";
-        ctx.fillStyle = "#FFFFFF";
+        ctx.font = '20pt Ariel';
+        ctx.fillStyle = '#FFFFFF';
         ctx.fillText(this.score, 20, 40);
     }
 }
@@ -109,7 +109,7 @@ function keyDownEventHandler(e) {
      * Chooses the correct keyevents depending upon the current state
      */
     //Check the current state
-    if (e.keyCode == MYAPP.keys.SPACE) {
+    if (e.keyCode === MYAPP.keys.SPACE) {
         if (MYAPP.state === 'startScreen') {
             MYAPP.stateToStartGame();
         }
@@ -120,10 +120,10 @@ function keyDownEventHandler(e) {
             MYAPP.stateToStartScreen();
         }
     }
-    else if (e.keyCode == MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+    else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.left = true;
         }
-        else if (e.keyCode == MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
+        else if (e.keyCode === MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.right = true;
         }
 }
@@ -132,10 +132,10 @@ function keyUpEventHandler(e) {
     /**
      * Reverts the relevant MYAPP.keys in keyDown dict to false when the button is released
      */
-    if (e.keyCode == MYAPP.keys.A_KEY) {
+    if (e.keyCode === MYAPP.keys.A_KEY) {
         MYAPP.keyDown.left = false;
     }
-    else if (e.keyCode == MYAPP.keys.D_Key) {
+    else if (e.keyCode === MYAPP.keys.D_Key) {
         MYAPP.keyDown.right = false;
     }
 }
@@ -150,7 +150,7 @@ function Boat() {
     this.direction = 0;
     //Boat sprite setup
     this.boatSprite = new Image();
-    this.boatSprite.src = "boat.png";
+    this.boatSprite.src = 'img/boat.png';
 
     this.draw = function() {
         if (this.direction === 0) {
@@ -168,7 +168,7 @@ function Boat() {
     this.move = function() {
         if (MYAPP.keyDown.left && this.x >= 0) {
         this.x--;
-        //console.log("left");
+        //console.log('left');
             if (this.direction !== 0) {
                 this.direction = 0;
             }
@@ -184,7 +184,7 @@ function Boat() {
 
 function Hook() {
     this.hookSprite = new Image();
-    this.hookSprite.src = "hook.png";
+    this.hookSprite.src = 'img/hook.png';
     this.dropped = false;
     this.raising = false;
     this.spriteHeight = 248;
@@ -197,26 +197,30 @@ function Hook() {
     }
         
     this.collision = function() {
-        if (!this.fishHooked) {
-            for (var i=0; i<MYAPP.shoal.fish.length; i++) {
-                var f   = MYAPP.shoal.fish[i];
-                var tip = MYAPP.boat.y + this.height;
+        let i = 0;
+        let f = null;
+        let tip = null;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w/3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w/3 > f.x + f.w || 
+        if (!this.fishHooked) {
+            for (i; i < MYAPP.shoal.fish.length; i++) {
+                f = MYAPP.shoal.fish[i];
+                tip = MYAPP.boat.y + this.height;
+
+                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
                       tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log("Caught one");
+                          console.log('Caught one');
                           f.caught = true;
                           this.raising = true;
                           this.fishHooked = true;
                 }
             }
-            for (var i=0; i<MYAPP.shoal.evilFish.length; i++) {
-                var f   = MYAPP.shoal.evilFish[i];
-                var tip = MYAPP.boat.y + this.height;
+            for (i = 0; i < MYAPP.shoal.evilFish.length; i++) {
+                f = MYAPP.shoal.evilFish[i];
+                tip = MYAPP.boat.y + this.height;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w/3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w/3 > f.x + f.w || 
+                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
                       tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log("Caught one");
+                          console.log('Caught one');
                           f.caught = true;
                           this.raising = true;
                           this.fishHooked = true;
@@ -227,17 +231,17 @@ function Hook() {
     this.draw = function(){
         if (this.dropped) {
             ctx.drawImage(this.hookSprite, 0, this.spriteHeight - this.height, 20, 
-                          this.height, MYAPP.boat.x + MYAPP.boat.w/3, MYAPP.boat.y, 20, this.height);
+                          this.height, MYAPP.boat.x + MYAPP.boat.w / 3, MYAPP.boat.y, 20, this.height);
             MYAPP.hook.collision();
         }
         // Move the MYAPP.hook up and down
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
             this.height++;
-            //console.log("increment height");
+            //console.log('increment height');
         }
         else if (this.dropped && this.raising) {
             this.height--;
-            //console.log("decrement height");
+            //console.log('decrement height');
         }
         
         // Raise the MYAPP.hook upon reaching the sea bed
@@ -272,7 +276,7 @@ function Fish(x, y, w, h, sprite) {
         if (this.caught) {
             this.y = MYAPP.boat.y + MYAPP.hook.height; 
             this.x = MYAPP.boat.x + MYAPP.boat.w/3;
-            console.log("Raising fishie!");
+            console.log('Raising fishie!');
         }
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
             if (this.dir === 1) {
@@ -316,51 +320,53 @@ function Shoal(n, e) {
     this.fish = [];
     this.evilFish = [];
     this.sprite = new Image();
-    this.sprite.src = "goldfish.png";
+    this.sprite.src = 'img/goldfish.png';
     this.eSprite = new Image();
-    this.eSprite.src = "evilfish.png";
+    this.eSprite.src = 'img/evilfish.png';
+    let i = 0;
 
     // Fill the fish array
-    for (var i=0; i < n; i++) {
+    for (i; i < n; i++) {
         this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
                                 Math.floor((Math.random() * (canvas.height/2-20)))
                                 + canvas.height/2, 30, 20, this.sprite))
     }
     // Fill the evilFish array
-    for (var i=0; i < e; i++) {
+    for (i = 0; i < e; i++) {
         this.evilFish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
                                 Math.floor((Math.random() * (canvas.height/2-20)))
                                 + canvas.height/2, 30, 20, this.eSprite))
     }
 
     this.drawAll = function(){
-        for (var i=0; i<this.fish.length; i++) {
+        let i = 0;
+        for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
         }
-        for (var i=0; i<this.evilFish.length; i++) {
+        for (i = 0; i < this.evilFish.length; i++) {
             this.evilFish[i].draw();
         }
     }
 
     this.removeFish = function(){
     //Removes a fish from the relevant array
+        let i = 0;
 
-        for (var i = 0; i<this.fish.length; i++) {
+        for (i; i < this.fish.length; i++) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
-                console.log("Sliced fish array");
+                console.log('Sliced fish array');
                 MYAPP.game.score++;
             }
         }
-        for (var i = 0; i<this.evilFish.length; i++) {
+        for (i = 0; i < this.evilFish.length; i++) {
             if (this.evilFish[i].caught) {
                 this.evilFish.splice(i, 1);
-                console.log("Sliced fish array");
+                console.log('Sliced fish array');
                 MYAPP.game.score--;
             }
         }
     }
-
 }
 
 function setup() {
@@ -369,7 +375,6 @@ function setup() {
     MYAPP.boat = new Boat();
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(1, 4);
-
 }
 
 function draw() {
