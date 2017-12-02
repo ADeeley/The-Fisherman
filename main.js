@@ -1,53 +1,65 @@
-var canvas     = document.getElementById("myCanvas");
-var ctx        = canvas.getContext("2d");
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
 
-window.addEventListener("keydown", keyDownEventHandler, false);
-window.addEventListener("keyup", keyUpEventHandler, false);
-
-var keyDown = {
-    /**
-     * Keeps a track of buttons being held down
-     */
-    left  : false,
-    right : false
-}
-var keys = {
-    /**
-     * An enumeration for key codes
-     */
-    SPACE     : 32,
-    A_KEY     : 65,
-    D_Key     : 68,
-    LEFT_KEY  : 37,
-    RIGHT_KEY : 39
+const MYAPP = {
+    keyDown: {
+        left: false,
+        right: false,
+    },
+    keys: {
+        SPACE: 32,
+        A_KEY: 65,
+        D_Key: 68,
+        LEFT_KEY: 37,
+        RIGHT_KEY: 39
+    },
+    state: 'startScreen',
+    game: null,
+    boat: null, 
+    hook: null,
+    shoal: null
 }
 
-// Gradient variable for the ocean
-var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
-gradient.addColorStop(0, "#1658EA");
-gradient.addColorStop(1, "black");
+MYAPP.stateToStartScreen = function() {
+    MYAPP.state = 'startScreen';
+    setup();        
+}
 
+MYAPP.stateToStartGame = function() {
+    MYAPP.state = 'gameLoop';
+    setup();        
+}
+
+MYAPP.stateToDeath = function() {
+    MYAPP.state = 'death';
+    setup();        
+}
+
+MYAPP.stateToVictory = function() {
+    MYAPP.state = 'victory';
+    setup();        
+}
 function Game() {
     this.score = 0;
     /**
-     * The main game loop
+     * The main MYAPP.game loop
      */
     this.startScreen = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.drawBackground();
         this.drawTitle();
-        boat.draw();
+        MYAPP.boat.draw();
     }
     this.gameLoop = function() {
         this.drawBackground();
         this.drawScore();
-        boat.draw();
-        boat.move();
-        shoal.drawAll();
-        hook.draw();
-        // End the game if no good fish remain
-        if (shoal.fish.length == 0) {
-            stateHandler.victorySequence();
+        MYAPP.boat.draw();
+        MYAPP.boat.move();
+        MYAPP.shoal.drawAll();
+        MYAPP.hook.draw();
+        // End the MYAPP.game if no good fish remain
+        if (MYAPP.shoal.fish.length == 0) {
+            MYAPP.stateToVictory();
         } 
     }
     this.deathScreen = function() {
@@ -81,44 +93,6 @@ function Game() {
         ctx.fillStyle = "#FFFFFF";
         ctx.fillText(this.score, 20, 40);
     }
-
-}
-
-function StateHandler() {
-    this.startScreen     = true;
-    this.gameLoop        = false;
-    this.dead            = false;
-    this.victory         = false;
-
-    this.returnToStartScreen = function() {
-        this.startScreen = true;
-        this.gameLoop    = false;
-        this.dead        = false;
-        this.victory     = false;
-        //Reset all class instances to default
-        setup();        
-    }
-
-    this.startGame = function() {
-        this.startScreen = false;
-        this.gameLoop    = true;
-        this.dead        = false;
-        this.victory     = false;
-    }
-
-    this.deathSequence = function() {
-        this.startScreen = false;
-        this.gameLoop    = false;
-        this.dead        = true;
-        this.victory     = false;
-    }
-
-    this.victorySequence = function() {
-        this.startScreen = false;
-        this.gameLoop    = false;
-        this.dead        = false;
-        this.victory     = true;
-    }
 }
 
 function keyDownEventHandler(e) {
@@ -126,56 +100,56 @@ function keyDownEventHandler(e) {
      * Chooses the correct keyevents depending upon the current state
      */
     //Check the current state
-    if (e.keyCode == keys.SPACE) {
-        if (stateHandler.startScreen) {
-            stateHandler.startGame();
+    if (e.keyCode == MYAPP.keys.SPACE) {
+        if (MYAPP.state === 'startScreen') {
+            MYAPP.stateToStartGame();
         }
-        else if (stateHandler.gameLoop) {
-            hook.drop();
+        else if (MYAPP.state === 'gameLoop') {
+            MYAPP.hook.drop();
         }
-        else if (stateHandler.victory) {
-            stateHandler.returnToStartScreen();
+        else if (MYAPP.state === 'victory') {
+            MYAPP.stateToStartScreen();
         }
     }
-    else if (e.keyCode == keys.A_KEY && stateHandler.gameLoop) {
-            keyDown.left = true;
+    else if (e.keyCode == MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+            MYAPP.keyDown.left = true;
         }
-        else if (e.keyCode == keys.D_Key && stateHandler.gameLoop) {
-            keyDown.right = true;
+        else if (e.keyCode == MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
+            MYAPP.keyDown.right = true;
         }
 }
 
 function keyUpEventHandler(e) {
     /**
-     * Reverts the relevant keys in keyDown dict to false when the button is released
+     * Reverts the relevant MYAPP.keys in keyDown dict to false when the button is released
      */
-    if (e.keyCode == keys.A_KEY) {
-        keyDown.left = false;
+    if (e.keyCode == MYAPP.keys.A_KEY) {
+        MYAPP.keyDown.left = false;
     }
-    else if (e.keyCode == keys.D_Key) {
-        keyDown.right = false;
+    else if (e.keyCode == MYAPP.keys.D_Key) {
+        MYAPP.keyDown.right = false;
     }
 }
 
 function Boat() {
-    this.x              = canvas.width/2;
-    this.y              = canvas.height/2;
-    this.speed          = 3;
-    this.w              = 50;
-    this.h              = 30;
+    this.x = canvas.width/2;
+    this.y = canvas.height/2;
+    this.speed = 3;
+    this.w = 50;
+    this.h = 30;
     // 0 represents left, 1 represents right
-    this.direction      = 0;
+    this.direction = 0;
     //Boat sprite setup
-    this.boatSprite     = new Image();
+    this.boatSprite = new Image();
     this.boatSprite.src = "boat.png";
 
     this.draw = function() {
-        if (this.direction == 0) {
+        if (this.direction === 0) {
             //Draw left sprite
             ctx.drawImage(this.boatSprite, 0, 0, this.w, this.h, 
                           this.x, this.y - this.h, this.w, this.h);
         }
-        else if (this.direction == 1) {
+        else if (this.direction === 1) {
             //Draw right sprite
             ctx.drawImage(this.boatSprite, 50, 0, this.w, this.h, 
                           this.x, this.y - this.h, this.w, this.h);
@@ -183,16 +157,16 @@ function Boat() {
     }
     
     this.move = function() {
-        if (keyDown.left && this.x >= 0) {
+        if (MYAPP.keyDown.left && this.x >= 0) {
         this.x--;
         //console.log("left");
-            if (this.direction != 0) {
+            if (this.direction !== 0) {
                 this.direction = 0;
             }
         }
-        else if (keyDown.right && this.x <= canvas.width - this.w) {
+        else if (MYAPP.keyDown.right && this.x <= canvas.width - this.w) {
         this.x++;
-            if (this.direction != 1) {
+            if (this.direction !== 1) {
                 this.direction = 1;
             }
         }
@@ -200,29 +174,26 @@ function Boat() {
 }
 
 function Hook() {
-    this.hookSprite     = new Image();
+    this.hookSprite = new Image();
     this.hookSprite.src = "hook.png";
-    this.dropped        = false;
-    this.raising        = false;
-    this.spriteHeight   = 248;
-    this.hookSz         = 20;
-    this.fishHooked     = false;
-
-    //Keep a track of the rope length
-    this.height         = 20;
+    this.dropped = false;
+    this.raising = false;
+    this.spriteHeight = 248;
+    this.hookSz = 20;
+    this.fishHooked = false;
+    this.height = 20;
     
     this.drop = function(){
         this.dropped = true;
-        //console.log("Drop");
     }
         
     this.collision = function() {
         if (!this.fishHooked) {
-            for (var i=0; i<shoal.fish.length; i++) {
-                var f   = shoal.fish[i];
-                var tip = boat.y + this.height;
+            for (var i=0; i<MYAPP.shoal.fish.length; i++) {
+                var f   = MYAPP.shoal.fish[i];
+                var tip = MYAPP.boat.y + this.height;
 
-                if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
+                if (!(MYAPP.boat.x + MYAPP.boat.w/3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w/3 > f.x + f.w || 
                       tip < f.y || tip - this.hookSz > f.y + f.h)) {
                           console.log("Caught one");
                           f.caught = true;
@@ -230,11 +201,11 @@ function Hook() {
                           this.fishHooked = true;
                 }
             }
-            for (var i=0; i<shoal.evilFish.length; i++) {
-                var f   = shoal.evilFish[i];
-                var tip = boat.y + this.height;
+            for (var i=0; i<MYAPP.shoal.evilFish.length; i++) {
+                var f   = MYAPP.shoal.evilFish[i];
+                var tip = MYAPP.boat.y + this.height;
 
-                if (!(boat.x + boat.w/3 + this.hookSz < f.x || boat.x + boat.w/3 > f.x + f.w || 
+                if (!(MYAPP.boat.x + MYAPP.boat.w/3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w/3 > f.x + f.w || 
                       tip < f.y || tip - this.hookSz > f.y + f.h)) {
                           console.log("Caught one");
                           f.caught = true;
@@ -247,10 +218,10 @@ function Hook() {
     this.draw = function(){
         if (this.dropped) {
             ctx.drawImage(this.hookSprite, 0, this.spriteHeight - this.height, 20, 
-                          this.height, boat.x + boat.w/3, boat.y, 20, this.height);
-            hook.collision();
+                          this.height, MYAPP.boat.x + MYAPP.boat.w/3, MYAPP.boat.y, 20, this.height);
+            MYAPP.hook.collision();
         }
-        // Move the hook up and down
+        // Move the MYAPP.hook up and down
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
             this.height++;
             //console.log("increment height");
@@ -260,45 +231,45 @@ function Hook() {
             //console.log("decrement height");
         }
         
-        // Raise the hook upon reaching the sea bed
+        // Raise the MYAPP.hook upon reaching the sea bed
         if (this.height >= canvas.height/2 && this.dropped) {
             this.raising = true;
         }
 
-        // Reset the hook upon reaching the boat again
+        // Reset the MYAPP.hook upon reaching the MYAPP.boat again
         if (this.height <= 0 && this.dropped) {
             this.dropped = false;
             this.raising = false;
             this.fishHooked = false;
 
-            // Remove any caught fish from the shoal
-            shoal.removeFish();
+            // Remove any caught fish from the MYAPP.shoal
+            MYAPP.shoal.removeFish();
         }
     }
 
 }
 
 function Fish(x, y, w, h, sprite) {
-    this.x      = x;
-    this.y      = y;
-    this.w      = w;
-    this.h      = h; 
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h; 
     this.sprite = sprite;
-    this.dir    = 1;
+    this.dir = 1;
     this.caught = false;
 
     this.move = function() {
         // Swim the fish in the specified direction
         if (this.caught) {
-            this.y = boat.y + hook.height; 
-            this.x = boat.x + boat.w/3;
+            this.y = MYAPP.boat.y + MYAPP.hook.height; 
+            this.x = MYAPP.boat.x + MYAPP.boat.w/3;
             console.log("Raising fishie!");
         }
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
-            if (this.dir == 1) {
+            if (this.dir === 1) {
                 this.x++;
             }
-            else if (this.dir == -1) {
+            else if (this.dir === -1) {
                 this.x--;
             }
 
@@ -309,17 +280,17 @@ function Fish(x, y, w, h, sprite) {
         } 
         else {
             this.dir *= -1;
-            if (this.dir == 1) {
+            if (this.dir === 1) {
                 this.x += 2;
             }
-            else if (this.dir == -1) {
+            else if (this.dir === -1) {
                 this.x -= 2;
             }
         }
     }
 
     this.draw = function() {
-        if (this.dir == 1) {
+        if (this.dir === 1) {
             ctx.drawImage(this.sprite, this.w, 0, this.w, this.h, this.x, this.y, 
                           this.w, this.h);
         }
@@ -333,12 +304,12 @@ function Fish(x, y, w, h, sprite) {
 
 
 function Shoal(n, e) {
-    this.fish        = [];
-    this.evilFish    = [];
-    this.sprite      = new Image();
-    this.sprite.src  = "goldfish.png";
-    this.eSprite      = new Image();
-    this.eSprite.src  = "evilfish.png";
+    this.fish = [];
+    this.evilFish = [];
+    this.sprite = new Image();
+    this.sprite.src = "goldfish.png";
+    this.eSprite = new Image();
+    this.eSprite.src = "evilfish.png";
 
     // Fill the fish array
     for (var i=0; i < n; i++) {
@@ -369,55 +340,47 @@ function Shoal(n, e) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log("Sliced fish array");
-                game.score++;
+                MYAPP.game.score++;
             }
         }
         for (var i = 0; i<this.evilFish.length; i++) {
             if (this.evilFish[i].caught) {
                 this.evilFish.splice(i, 1);
                 console.log("Sliced fish array");
-                game.score--;
+                MYAPP.game.score--;
             }
         }
     }
 
 }
 
-
-// Object assignments to variables
-var stateHandler;
-var game;
-var boat;
-var hook;
-var shoal;
-
 function setup() {
     // Object instantiations
-    stateHandler = new StateHandler();
-    game         = new Game();
-    boat         = new Boat();
-    hook         = new Hook();
-    shoal        = new Shoal(1, 4);
-
+    MYAPP.game = new Game();
+    MYAPP.boat = new Boat();
+    MYAPP.hook = new Hook();
+    MYAPP.shoal = new Shoal(1, 4);
 }
 
 function draw() {
-    // The main loop - checks the stateHandler and runs the appropriate loop
-    if (stateHandler.startScreen) {
-        game.startScreen();
+    // The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
+    if (MYAPP.state === 'startScreen') {
+        MYAPP.game.startScreen();
     }
-    else if (stateHandler.gameLoop) {
+    else if (MYAPP.state === 'gameLoop') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        game.gameLoop();
+        MYAPP.game.gameLoop();
     }
-    else if (stateHandler.dead) {
-        game.deathScreen();
+    else if (MYAPP.state === 'death') {
+        MYAPP.game.deathScreen();
     }
-    else if (stateHandler.victory) {
-        game.victoryScreen();
+    else if (MYAPP.state === 'victory') {
+        MYAPP.game.victoryScreen();
+    }
+    else {
+        console.log(MYAPP.state);
     }
 }
 
-// call draw every 10ms
 setup();        
 setInterval(draw, 10);

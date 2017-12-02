@@ -1,0 +1,36 @@
+{
+  "name": "the-fisherman",
+  "version": "1.0.0",
+  "description": "Challenges you to catch as many fish as you can.",
+  "main": "main.js",
+  "dependencies": {
+    "eslint": "^4.12.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ADeeley/The-Fisherman.git"
+  },
+  "keywords": [
+    "Fish",
+    "Game",
+    "Canvas",
+    "JavaScript"
+  ],
+  "author": "Adam M Deeley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ADeeley/The-Fisherman/issues"
+  },
+  "homepage": "https://github.com/ADeeley/The-Fisherman#readme"
+}
