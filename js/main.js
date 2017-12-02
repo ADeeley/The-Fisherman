@@ -39,6 +39,15 @@ MYAPP.stateToVictory = function() {
     MYAPP.state = 'victory';
     setup();        
 }
+
+window.addEventListener("keydown", keyDownEventHandler, false);
+window.addEventListener("keyup", keyUpEventHandler, false);
+
+// Gradient variable for the ocean
+var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
+gradient.addColorStop(0, "#1658EA");
+gradient.addColorStop(1, "black");
+
 function Game() {
     this.score = 0;
     /**
@@ -360,6 +369,7 @@ function setup() {
     MYAPP.boat = new Boat();
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(1, 4);
+
 }
 
 function draw() {
@@ -382,5 +392,6 @@ function draw() {
     }
 }
 
+// call draw every 10ms
 setup();        
 setInterval(draw, 10);
