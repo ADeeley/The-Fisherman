@@ -1,3 +1,5 @@
+'use strict';
+
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,

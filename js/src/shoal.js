@@ -1,3 +1,5 @@
+'use strict';
+
 const utils_module = require('./utils.js'),
     Fish = require('./fish.js').Fish,
     ctx = utils_module.ctx,
@@ -11,7 +13,7 @@ function Shoal(n, e) {
     this.eSprite.src = 'img/evilfish.png';
     let i = 0,
         x = null,
-        y = null;
+        y = null,
         xDelta = canvas.width-30,
         yDelta = (canvas.height/2-20);
 

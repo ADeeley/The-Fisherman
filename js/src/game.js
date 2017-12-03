@@ -1,3 +1,5 @@
+'use strict';
+
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
@@ -11,7 +13,7 @@ gradient.addColorStop(1, 'black');
  */
 function Game() {
     this.score = 0;
-    let largeFont = '40pt Ariel';
+    let largeFont = '40pt Ariel',
         mediumFont = '20pt Ariel';
     /**
      * The main MYAPP.game loop

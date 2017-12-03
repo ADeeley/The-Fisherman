@@ -1,3 +1,5 @@
+'use strict';
+
 const Game = require('./game.js').Game,
     Boat = require('./boat.js').Boat,
     Hook = require('./hook.js').Hook,

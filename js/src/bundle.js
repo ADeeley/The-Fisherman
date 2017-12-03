@@ -1,4 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
@@ -49,6 +51,8 @@ module.exports = {
 }
 
 },{"./utils.js":7}],2:[function(require,module,exports){
+'use strict';
+
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
@@ -107,6 +111,8 @@ module.exports = {
     Fish: Fish,
 }
 },{"./utils.js":7}],3:[function(require,module,exports){
+'use strict';
+
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
@@ -120,7 +126,7 @@ gradient.addColorStop(1, 'black');
  */
 function Game() {
     this.score = 0;
-    let largeFont = '40pt Ariel';
+    let largeFont = '40pt Ariel',
         mediumFont = '20pt Ariel';
     /**
      * The main MYAPP.game loop
@@ -210,6 +216,7 @@ function Hook() {
         shoalLen = MYAPP.shoal.fish.length;
         evilShoalLen = MYAPP.shoal.evilFish.length;
 
+        // Make a callback function to return true if the critereon are fulfilled
         if (!this.fishHooked) {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
@@ -277,6 +284,8 @@ module.exports = {
     Hook: Hook,
 }
 },{"./utils.js":7}],5:[function(require,module,exports){
+'use strict';
+
 const Game = require('./game.js').Game,
     Boat = require('./boat.js').Boat,
     Hook = require('./hook.js').Hook,
@@ -304,18 +313,14 @@ function keyDownEventHandler(e) {
     if (e.keyCode === MYAPP.keys.SPACE) {
         if (MYAPP.state === 'startScreen') {
             MYAPP.stateToStartGame();
-        }
-        else if (MYAPP.state === 'gameLoop') {
+        } else if (MYAPP.state === 'gameLoop') {
             MYAPP.hook.drop();
-        }
-        else if (MYAPP.state === 'victory') {
+        } else if (MYAPP.state === 'victory') {
             MYAPP.stateToStartScreen();
         }
-    }
-    else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+    } else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.left = true;
-        }
-        else if (e.keyCode === MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
+        } else if (e.keyCode === MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.right = true;
         }
 }
@@ -326,8 +331,7 @@ function keyUpEventHandler(e) {
      */
     if (e.keyCode === MYAPP.keys.A_KEY) {
         MYAPP.keyDown.left = false;
-    }
-    else if (e.keyCode === MYAPP.keys.D_Key) {
+    } else if (e.keyCode === MYAPP.keys.D_Key) {
         MYAPP.keyDown.right = false;
     }
 }
@@ -337,25 +341,24 @@ function mainLoop() {
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
         setup();        
-    }
-    else if (MYAPP.state === 'gameLoop') {
+    } else if (MYAPP.state === 'gameLoop') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         MYAPP.game.gameLoop();
-    }
-    else if (MYAPP.state === 'death') {
+    } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();
-    }
-    else if (MYAPP.state === 'victory') {
+    } else if (MYAPP.state === 'victory') {
         MYAPP.game.victoryScreen();
-    }
-    else {
+    } else {
         console.log("Main loop state error: " + MYAPP.state);
     }
 }
 
 setup();        
 setInterval(mainLoop, 10);
+
 },{"./boat.js":1,"./game.js":3,"./hook.js":4,"./shoal.js":6,"./utils.js":7}],6:[function(require,module,exports){
+'use strict';
+
 const utils_module = require('./utils.js'),
     Fish = require('./fish.js').Fish,
     ctx = utils_module.ctx,
@@ -369,7 +372,7 @@ function Shoal(n, e) {
     this.eSprite.src = 'img/evilfish.png';
     let i = 0,
         x = null,
-        y = null;
+        y = null,
         xDelta = canvas.width-30,
         yDelta = (canvas.height/2-20);
 
@@ -432,9 +435,12 @@ function Shoal(n, e) {
 module.exports = {
     Shoal: Shoal,
 }
+
 },{"./fish.js":2,"./utils.js":7}],7:[function(require,module,exports){
+'use strict';
+
 const canvas = document.getElementById('myCanvas'),
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d'),
     MYAPP = {
     keyDown: {
         left: false,

@@ -1,5 +1,7 @@
+'use strict';
+
 const canvas = document.getElementById('myCanvas'),
-    ctx = canvas.getContext('2d');
+    ctx = canvas.getContext('2d'),
     MYAPP = {
     keyDown: {
         left: false,
