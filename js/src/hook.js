@@ -28,6 +28,7 @@ function Hook() {
         shoalLen = MYAPP.shoal.fish.length;
         evilShoalLen = MYAPP.shoal.evilFish.length;
 
+        // Make a callback function to return true if the critereon are fulfilled
         if (!this.fishHooked) {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
