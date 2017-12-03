@@ -2,7 +2,7 @@
   "name": "the-fisherman",
   "version": "1.0.0",
   "description": "Challenges you to catch as many fish as you can.",
-  "main": "main.js",
+  "main": "bundle.js",
   "dependencies": {
     "eslint": "^4.12.1",
     "eslint-config-standard": "^10.2.1",
@@ -12,10 +12,12 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "devDependencies": {
+    "browserify": "^14.5.0",
     "eslint-config-google": "^0.9.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify js/src/main.js js/src/boat.js -o js/src/bundle.js"
   },
   "repository": {
     "type": "git",
