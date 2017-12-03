@@ -48,7 +48,6 @@ module.exports = {
     Boat: Boat,
 }
 
-
 },{"./utils.js":7}],2:[function(require,module,exports){
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
@@ -74,8 +73,7 @@ function Fish(x, y, w, h, sprite) {
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
             if (this.dir === 1) {
                 this.x++;
-            }
-            else if (this.dir === -1) {
+            } else if (this.dir === -1) {
                 this.x--;
             }
 
@@ -83,13 +81,11 @@ function Fish(x, y, w, h, sprite) {
             if (Math.random() > 0.99) {
                 this.dir *= -1;
             }
-        } 
-        else {
+        } else {
             this.dir *= -1;
             if (this.dir === 1) {
                 this.x += 2;
-            }
-            else if (this.dir === -1) {
+            } else if (this.dir === -1) {
                 this.x -= 2;
             }
         }
@@ -99,8 +95,7 @@ function Fish(x, y, w, h, sprite) {
         if (this.dir === 1) {
             ctx.drawImage(this.sprite, this.w, 0, this.w, this.h, this.x, this.y, 
                           this.w, this.h);
-        }
-        else {
+        } else {
             ctx.drawImage(this.sprite, 0, 0, this.w, this.h, this.x, this.y, 
                           this.w, this.h);
         }
@@ -115,10 +110,9 @@ module.exports = {
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
-    MYAPP = utils_module.MYAPP;
+    MYAPP = utils_module.MYAPP,
+    gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
 
-// Gradient variable for the ocean
-var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 /**
@@ -126,6 +120,8 @@ gradient.addColorStop(1, 'black');
  */
 function Game() {
     this.score = 0;
+    let largeFont = '40pt Ariel';
+        mediumFont = '20pt Ariel';
     /**
      * The main MYAPP.game loop
      */
@@ -148,14 +144,14 @@ function Game() {
         } 
     }
     this.deathScreen = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('You died!', canvas.width/4, canvas.height/4);
         this.drawBackground();
     }
     this.victoryScreen = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('You won!', canvas.width/4, canvas.height/4);
     }
 
@@ -168,14 +164,14 @@ function Game() {
         ctx.closePath();
     }
     this.drawTitle = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('The', 20, canvas.height/2 - 5);
         ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
     }
     this.drawScore = function() {
-        ctx.font = '20pt Ariel';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = mediumFont;
+        ctx.fillStyle = 'white';
         ctx.fillText(this.score, 20, 40);
     }
 }
@@ -204,33 +200,43 @@ function Hook() {
     }
         
     this.collision = function() {
-        let i = 0;
-        let f = null;
-        let tip = null;
+        let i = 0,
+        f = null,
+        tip = null,
+        top = null,
+        right = null, 
+        bottom = null,
+        left = null,
+        shoalLen = MYAPP.shoal.fish.length;
+        evilShoalLen = MYAPP.shoal.evilFish.length;
 
         if (!this.fishHooked) {
-            for (i; i < MYAPP.shoal.fish.length; i++) {
+            for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
-                tip = MYAPP.boat.y + this.height;
+                top = bottom - this.hookSz;
+                right = MYAPP.boat.x + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.y + this.height;
+                left = MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
-                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log('Caught one');
-                          f.caught = true;
-                          this.raising = true;
-                          this.fishHooked = true;
+                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                    console.log('Caught one');
+                    f.caught = true;
+                    this.raising = true;
+                    this.fishHooked = true;
                 }
             }
             for (i = 0; i < MYAPP.shoal.evilFish.length; i++) {
                 f = MYAPP.shoal.evilFish[i];
-                tip = MYAPP.boat.y + this.height;
+                top = bottom - this.hookSz;
+                right = MYAPP.boat.x + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.y + this.height;
+                left = MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
-                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log('Caught one');
-                          f.caught = true;
-                          this.raising = true;
-                          this.fishHooked = true;
+                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                    console.log('Caught one');
+                    f.caught = true;
+                    this.raising = true;
+                    this.fishHooked = true;
                 }
             }
         }
@@ -245,8 +251,7 @@ function Hook() {
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
             this.height++;
             //console.log('increment height');
-        }
-        else if (this.dropped && this.raising) {
+        } else if (this.dropped && this.raising) {
             this.height--;
             //console.log('decrement height');
         }
@@ -358,29 +363,43 @@ const utils_module = require('./utils.js'),
     MYAPP = utils_module.MYAPP;
 
 function Shoal(n, e) {
-    this.fish = [];
-    this.evilFish = [];
     this.sprite = new Image();
     this.sprite.src = 'img/goldfish.png';
     this.eSprite = new Image();
     this.eSprite.src = 'img/evilfish.png';
-    let i = 0;
+    let i = 0,
+        x = null,
+        y = null;
+        xDelta = canvas.width-30,
+        yDelta = (canvas.height/2-20);
 
-    // Fill the fish array
-    for (i; i < n; i++) {
-        this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
-                                Math.floor((Math.random() * (canvas.height/2-20)))
-                                + canvas.height/2, 30, 20, this.sprite))
-    }
-    // Fill the evilFish array
-    for (i = 0; i < e; i++) {
-        this.evilFish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
-                                Math.floor((Math.random() * (canvas.height/2-20)))
-                                + canvas.height/2, 30, 20, this.eSprite))
-    }
+    this.fish = (() => {
+        let fishArr = [];
+
+        for (i; i < n; i++) {
+            x = Math.floor(Math.random() * xDelta),
+            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            fishArr.push(new Fish(x, y, 30, 20, this.sprite))
+        }
+
+        return fishArr;
+    })();
+
+    this.evilFish = (() => {
+        let evilFishArr = [];
+
+        for (i; i < e; i++) {
+            x = Math.floor(Math.random() * xDelta),
+            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            evilFishArr.push(new Fish(x, y, 30, 20, this.eSprite))
+        }
+
+        return evilFishArr;
+    })();
+
 
     this.drawAll = function(){
-        let i = 0;
+        i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
         }
@@ -391,7 +410,7 @@ function Shoal(n, e) {
 
     this.removeFish = function(){
     //Removes a fish from the relevant array
-        let i = 0;
+        i = 0;
 
         for (i; i < this.fish.length; i++) {
             if (this.fish[i].caught) {

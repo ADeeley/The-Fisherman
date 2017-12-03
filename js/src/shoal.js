@@ -5,29 +5,43 @@ const utils_module = require('./utils.js'),
     MYAPP = utils_module.MYAPP;
 
 function Shoal(n, e) {
-    this.fish = [];
-    this.evilFish = [];
     this.sprite = new Image();
     this.sprite.src = 'img/goldfish.png';
     this.eSprite = new Image();
     this.eSprite.src = 'img/evilfish.png';
-    let i = 0;
+    let i = 0,
+        x = null,
+        y = null;
+        xDelta = canvas.width-30,
+        yDelta = (canvas.height/2-20);
 
-    // Fill the fish array
-    for (i; i < n; i++) {
-        this.fish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
-                                Math.floor((Math.random() * (canvas.height/2-20)))
-                                + canvas.height/2, 30, 20, this.sprite))
-    }
-    // Fill the evilFish array
-    for (i = 0; i < e; i++) {
-        this.evilFish.push(new Fish(Math.floor(Math.random() * (canvas.width-30)),
-                                Math.floor((Math.random() * (canvas.height/2-20)))
-                                + canvas.height/2, 30, 20, this.eSprite))
-    }
+    this.fish = (() => {
+        let fishArr = [];
+
+        for (i; i < n; i++) {
+            x = Math.floor(Math.random() * xDelta),
+            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            fishArr.push(new Fish(x, y, 30, 20, this.sprite))
+        }
+
+        return fishArr;
+    })();
+
+    this.evilFish = (() => {
+        let evilFishArr = [];
+
+        for (i; i < e; i++) {
+            x = Math.floor(Math.random() * xDelta),
+            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            evilFishArr.push(new Fish(x, y, 30, 20, this.eSprite))
+        }
+
+        return evilFishArr;
+    })();
+
 
     this.drawAll = function(){
-        let i = 0;
+        i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
         }
@@ -38,7 +52,7 @@ function Shoal(n, e) {
 
     this.removeFish = function(){
     //Removes a fish from the relevant array
-        let i = 0;
+        i = 0;
 
         for (i; i < this.fish.length; i++) {
             if (this.fish[i].caught) {

@@ -46,4 +46,3 @@ function Boat() {
 module.exports = {
     Boat: Boat,
 }
-

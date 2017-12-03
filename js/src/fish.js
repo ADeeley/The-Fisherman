@@ -22,8 +22,7 @@ function Fish(x, y, w, h, sprite) {
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
             if (this.dir === 1) {
                 this.x++;
-            }
-            else if (this.dir === -1) {
+            } else if (this.dir === -1) {
                 this.x--;
             }
 
@@ -31,13 +30,11 @@ function Fish(x, y, w, h, sprite) {
             if (Math.random() > 0.99) {
                 this.dir *= -1;
             }
-        } 
-        else {
+        } else {
             this.dir *= -1;
             if (this.dir === 1) {
                 this.x += 2;
-            }
-            else if (this.dir === -1) {
+            } else if (this.dir === -1) {
                 this.x -= 2;
             }
         }
@@ -47,8 +44,7 @@ function Fish(x, y, w, h, sprite) {
         if (this.dir === 1) {
             ctx.drawImage(this.sprite, this.w, 0, this.w, this.h, this.x, this.y, 
                           this.w, this.h);
-        }
-        else {
+        } else {
             ctx.drawImage(this.sprite, 0, 0, this.w, this.h, this.x, this.y, 
                           this.w, this.h);
         }

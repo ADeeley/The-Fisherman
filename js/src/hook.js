@@ -18,33 +18,43 @@ function Hook() {
     }
         
     this.collision = function() {
-        let i = 0;
-        let f = null;
-        let tip = null;
+        let i = 0,
+        f = null,
+        tip = null,
+        top = null,
+        right = null, 
+        bottom = null,
+        left = null,
+        shoalLen = MYAPP.shoal.fish.length;
+        evilShoalLen = MYAPP.shoal.evilFish.length;
 
         if (!this.fishHooked) {
-            for (i; i < MYAPP.shoal.fish.length; i++) {
+            for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
-                tip = MYAPP.boat.y + this.height;
+                top = bottom - this.hookSz;
+                right = MYAPP.boat.x + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.y + this.height;
+                left = MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
-                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log('Caught one');
-                          f.caught = true;
-                          this.raising = true;
-                          this.fishHooked = true;
+                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                    console.log('Caught one');
+                    f.caught = true;
+                    this.raising = true;
+                    this.fishHooked = true;
                 }
             }
             for (i = 0; i < MYAPP.shoal.evilFish.length; i++) {
                 f = MYAPP.shoal.evilFish[i];
-                tip = MYAPP.boat.y + this.height;
+                top = bottom - this.hookSz;
+                right = MYAPP.boat.x + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.y + this.height;
+                left = MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz;
 
-                if (!(MYAPP.boat.x + MYAPP.boat.w / 3 + this.hookSz < f.x || MYAPP.boat.x + MYAPP.boat.w / 3 > f.x + f.w || 
-                      tip < f.y || tip - this.hookSz > f.y + f.h)) {
-                          console.log('Caught one');
-                          f.caught = true;
-                          this.raising = true;
-                          this.fishHooked = true;
+                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                    console.log('Caught one');
+                    f.caught = true;
+                    this.raising = true;
+                    this.fishHooked = true;
                 }
             }
         }
@@ -59,8 +69,7 @@ function Hook() {
         if (this.height < this.spriteHeight && this.dropped && !this.raising) {
             this.height++;
             //console.log('increment height');
-        }
-        else if (this.dropped && this.raising) {
+        } else if (this.dropped && this.raising) {
             this.height--;
             //console.log('decrement height');
         }

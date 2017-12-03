@@ -1,10 +1,9 @@
 const utils_module = require('./utils.js'),
     ctx = utils_module.ctx,
     canvas = utils_module.canvas,
-    MYAPP = utils_module.MYAPP;
+    MYAPP = utils_module.MYAPP,
+    gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
 
-// Gradient variable for the ocean
-var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 /**
@@ -12,6 +11,8 @@ gradient.addColorStop(1, 'black');
  */
 function Game() {
     this.score = 0;
+    let largeFont = '40pt Ariel';
+        mediumFont = '20pt Ariel';
     /**
      * The main MYAPP.game loop
      */
@@ -34,14 +35,14 @@ function Game() {
         } 
     }
     this.deathScreen = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('You died!', canvas.width/4, canvas.height/4);
         this.drawBackground();
     }
     this.victoryScreen = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#ffffff';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('You won!', canvas.width/4, canvas.height/4);
     }
 
@@ -54,14 +55,14 @@ function Game() {
         ctx.closePath();
     }
     this.drawTitle = function() {
-        ctx.font = '40pt Ariel';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = largeFont;
+        ctx.fillStyle = 'white';
         ctx.fillText('The', 20, canvas.height/2 - 5);
         ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
     }
     this.drawScore = function() {
-        ctx.font = '20pt Ariel';
-        ctx.fillStyle = '#FFFFFF';
+        ctx.font = mediumFont;
+        ctx.fillStyle = 'white';
         ctx.fillText(this.score, 20, 40);
     }
 }
