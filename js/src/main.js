@@ -25,15 +25,20 @@ function keyDownEventHandler(e) {
      */
     //Check the current state
     if (e.keyCode === MYAPP.keys.SPACE) {
+
         if (MYAPP.state === 'startScreen') {
             MYAPP.stateToStartGame();
+
         } else if (MYAPP.state === 'gameLoop') {
             MYAPP.hook.drop();
+
         } else if (MYAPP.state === 'victory') {
             MYAPP.stateToStartScreen();
+
         }
     } else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.left = true;
+
         } else if (e.keyCode === MYAPP.keys.D_Key && MYAPP.state === 'gameLoop') {
             MYAPP.keyDown.right = true;
         }
@@ -45,6 +50,7 @@ function keyUpEventHandler(e) {
      */
     if (e.keyCode === MYAPP.keys.A_KEY) {
         MYAPP.keyDown.left = false;
+
     } else if (e.keyCode === MYAPP.keys.D_Key) {
         MYAPP.keyDown.right = false;
     }
@@ -55,13 +61,17 @@ function mainLoop() {
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
         setup();        
+
     } else if (MYAPP.state === 'gameLoop') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         MYAPP.game.gameLoop();
+
     } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();
+
     } else if (MYAPP.state === 'victory') {
         MYAPP.game.victoryScreen();
+
     } else {
         console.log("Main loop state error: " + MYAPP.state);
     }

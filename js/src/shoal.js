@@ -7,15 +7,16 @@ const utils_module = require('./utils.js'),
     MYAPP = utils_module.MYAPP;
 
 function Shoal(n, e) {
-    this.sprite = new Image();
-    this.sprite.src = 'img/goldfish.png';
-    this.eSprite = new Image();
-    this.eSprite.src = 'img/evilfish.png';
-    let i = 0,
+    let goodFishSprite = new Image(),
+        evilFishSprite = new Image(),
+        i = 0,
         x = null,
         y = null,
         xDelta = canvas.width-30,
         yDelta = (canvas.height/2-20);
+
+    evilFishSprite.src = 'img/evilfish.png';
+    goodFishSprite.src = 'img/goldfish.png';
 
     this.fish = (() => {
         let fishArr = [];
@@ -23,7 +24,7 @@ function Shoal(n, e) {
         for (i; i < n; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            fishArr.push(new Fish(x, y, 30, 20, this.sprite))
+            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite))
         }
 
         return fishArr;
@@ -35,7 +36,7 @@ function Shoal(n, e) {
         for (i; i < e; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            evilFishArr.push(new Fish(x, y, 30, 20, this.eSprite))
+            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite))
         }
 
         return evilFishArr;
