@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-let utils_module = require('./utils.js')
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+const utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 /**
  *  Constructor function for the boat object.
@@ -49,11 +49,11 @@ module.exports = {
 }
 
 
-},{"./utils.js":8}],2:[function(require,module,exports){
-let utils_module = require('./utils.js')
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+},{"./utils.js":7}],2:[function(require,module,exports){
+const utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 function Fish(x, y, w, h, sprite) {
     this.x = x;
@@ -111,11 +111,11 @@ function Fish(x, y, w, h, sprite) {
 module.exports = {
     Fish: Fish,
 }
-},{"./utils.js":8}],3:[function(require,module,exports){
-let utils_module = require('./utils.js')
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+},{"./utils.js":7}],3:[function(require,module,exports){
+const utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 // Gradient variable for the ocean
 var gradient = ctx.createLinearGradient(0, canvas.height/2 ,0, 500); 
@@ -183,11 +183,11 @@ function Game() {
 module.exports = {
     Game: Game,
 }
-},{"./utils.js":8}],4:[function(require,module,exports){
-let utils_module = require('./utils.js')
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+},{"./utils.js":7}],4:[function(require,module,exports){
+const utils_module = require('./utils.js')
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 function Hook() {
     this.hookSprite = new Image();
@@ -271,15 +271,25 @@ function Hook() {
 module.exports = {
     Hook: Hook,
 }
-},{"./utils.js":8}],5:[function(require,module,exports){
-let setup = require('./setup.js').setup;
-var utils_module = require('./utils.js')
-var ctx = utils_module.ctx;
-var canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+},{"./utils.js":7}],5:[function(require,module,exports){
+const Game = require('./game.js').Game,
+    Boat = require('./boat.js').Boat,
+    Hook = require('./hook.js').Hook,
+    Shoal = require('./shoal.js').Shoal,
+    utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 window.addEventListener('keydown', keyDownEventHandler, false);
 window.addEventListener('keyup', keyUpEventHandler, false);
+
+function setup() {
+    MYAPP.game = new Game();
+    MYAPP.boat = new Boat();
+    MYAPP.hook = new Hook();
+    MYAPP.shoal = new Shoal(1, 4);
+}
 
 function keyDownEventHandler(e) {
     /**
@@ -317,7 +327,7 @@ function keyUpEventHandler(e) {
     }
 }
 
-function draw() {
+function mainLoop() {
     // The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
@@ -334,38 +344,18 @@ function draw() {
         MYAPP.game.victoryScreen();
     }
     else {
-        console.log(MYAPP.state);
+        console.log("Main loop state error: " + MYAPP.state);
     }
 }
 
-// call draw every 10ms
 setup();        
-setInterval(draw, 10);
-},{"./setup.js":6,"./utils.js":8}],6:[function(require,module,exports){
-let Game = require('./game.js').Game;
-let Boat = require('./boat.js').Boat;
-var Hook = require('./hook.js').Hook;
-var Shoal = require('./shoal.js').Shoal;
-
-/**
- * 
- */
-function setup() {
-    MYAPP.game = new Game();
-    MYAPP.boat = new Boat();
-    MYAPP.hook = new Hook();
-    MYAPP.shoal = new Shoal(1, 4);
-}
-
-module.exports = {
-    setup: setup,
-}
-},{"./boat.js":1,"./game.js":3,"./hook.js":4,"./shoal.js":7}],7:[function(require,module,exports){
-let utils_module = require('./utils.js')
-var Fish = require('./fish.js').Fish;
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+setInterval(mainLoop, 10);
+},{"./boat.js":1,"./game.js":3,"./hook.js":4,"./shoal.js":6,"./utils.js":7}],6:[function(require,module,exports){
+const utils_module = require('./utils.js'),
+    Fish = require('./fish.js').Fish,
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 function Shoal(n, e) {
     this.fish = [];
@@ -423,11 +413,10 @@ function Shoal(n, e) {
 module.exports = {
     Shoal: Shoal,
 }
-},{"./fish.js":2,"./utils.js":8}],8:[function(require,module,exports){
-const canvas = document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
-
-const MYAPP = {
+},{"./fish.js":2,"./utils.js":7}],7:[function(require,module,exports){
+const canvas = document.getElementById('myCanvas'),
+    ctx = canvas.getContext('2d');
+    MYAPP = {
     keyDown: {
         left: false,
         right: false,

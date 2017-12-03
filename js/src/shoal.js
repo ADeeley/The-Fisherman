@@ -1,8 +1,8 @@
-let utils_module = require('./utils.js')
-var Fish = require('./fish.js').Fish;
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+const utils_module = require('./utils.js'),
+    Fish = require('./fish.js').Fish,
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 function Shoal(n, e) {
     this.fish = [];

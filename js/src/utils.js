@@ -1,7 +1,6 @@
-const canvas = document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
-
-const MYAPP = {
+const canvas = document.getElementById('myCanvas'),
+    ctx = canvas.getContext('2d');
+    MYAPP = {
     keyDown: {
         left: false,
         right: false,

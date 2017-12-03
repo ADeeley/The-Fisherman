@@ -1,11 +1,21 @@
-let setup = require('./setup.js').setup;
-var utils_module = require('./utils.js')
-var ctx = utils_module.ctx;
-var canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+const Game = require('./game.js').Game,
+    Boat = require('./boat.js').Boat,
+    Hook = require('./hook.js').Hook,
+    Shoal = require('./shoal.js').Shoal,
+    utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 window.addEventListener('keydown', keyDownEventHandler, false);
 window.addEventListener('keyup', keyUpEventHandler, false);
+
+function setup() {
+    MYAPP.game = new Game();
+    MYAPP.boat = new Boat();
+    MYAPP.hook = new Hook();
+    MYAPP.shoal = new Shoal(1, 4);
+}
 
 function keyDownEventHandler(e) {
     /**
@@ -43,7 +53,7 @@ function keyUpEventHandler(e) {
     }
 }
 
-function draw() {
+function mainLoop() {
     // The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
@@ -60,10 +70,9 @@ function draw() {
         MYAPP.game.victoryScreen();
     }
     else {
-        console.log(MYAPP.state);
+        console.log("Main loop state error: " + MYAPP.state);
     }
 }
 
-// call draw every 10ms
 setup();        
-setInterval(draw, 10);
+setInterval(mainLoop, 10);

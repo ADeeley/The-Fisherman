@@ -1,7 +1,7 @@
-let utils_module = require('./utils.js')
-let ctx = utils_module.ctx;
-let canvas = utils_module.canvas;
-MYAPP = utils_module.MYAPP;
+const utils_module = require('./utils.js'),
+    ctx = utils_module.ctx,
+    canvas = utils_module.canvas,
+    MYAPP = utils_module.MYAPP;
 
 function Fish(x, y, w, h, sprite) {
     this.x = x;
