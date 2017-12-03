@@ -317,14 +317,11 @@ function keyUpEventHandler(e) {
     }
 }
 
-
-
-
-
 function draw() {
     // The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
+        setup();        
     }
     else if (MYAPP.state === 'gameLoop') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -427,8 +424,6 @@ module.exports = {
     Shoal: Shoal,
 }
 },{"./fish.js":2,"./utils.js":8}],8:[function(require,module,exports){
-let setup = require('./setup.js');
-console.log(setup);
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -457,7 +452,6 @@ MYAPP.stateToStartScreen = function() {
 
 MYAPP.stateToStartGame = function() {
     MYAPP.state = 'gameLoop';
-    setup();        
 }
 
 MYAPP.stateToDeath = function() {
@@ -474,4 +468,4 @@ module.exports = {
     ctx: ctx,
 }
 
-},{"./setup.js":6}]},{},[5,1]);
+},{}]},{},[5,1]);

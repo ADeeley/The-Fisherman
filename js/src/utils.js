@@ -1,5 +1,3 @@
-let setup = require('./setup.js');
-console.log(setup);
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -28,7 +26,6 @@ MYAPP.stateToStartScreen = function() {
 
 MYAPP.stateToStartGame = function() {
     MYAPP.state = 'gameLoop';
-    setup();        
 }
 
 MYAPP.stateToDeath = function() {

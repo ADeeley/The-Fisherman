@@ -43,14 +43,11 @@ function keyUpEventHandler(e) {
     }
 }
 
-
-
-
-
 function draw() {
     // The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
+        setup();        
     }
     else if (MYAPP.state === 'gameLoop') {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
