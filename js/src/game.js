@@ -11,94 +11,129 @@ gradient.addColorStop(1, 'black');
 /**
  * Game constructor function
  */
-const game = {
-    largeFont: '40pt Ariel',
-    mediumFont: '20pt Ariel',
-    score: 0,
-};
+const game = (function() {
+    let largeFont = '40pt Ariel',
+        mediumFont = '20pt Ariel',
+        score = 0;
 
-game.getScore = function() {
-    return game.score;
-};
-
-game.incrementScore = function() {
-    game.score++;
-};
-
-game.decrementScore = function() {
-    game.score--;
-};
-
-game.resetScore = function() {
-    game.score = 0;
-};
-
-game.startScreen = function() {
-    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-    game.drawBackground();
-    game.drawTitle();
-    MYAPP.boat.draw();
-};
-
-game.gameLoop = function() {
-    game.drawBackground();
-    game.drawScore();
-    MYAPP.boat.draw();
-    MYAPP.boat.move();
-    MYAPP.shoal.drawAll();
-    MYAPP.hook.draw();
-    // End the game if no good fish remain
-    if (MYAPP.shoal.fish.length == 0) {
-        MYAPP.stateToVictory();
+    /**
+     * Getter for the score.
+     * @return {Number} the current score.
+     */
+    function getScore() {
+        return score;
     };
-};
 
-game.deathScreen = function() {
-    CTX.font = game.largeFont;
-    CTX.fillStyle = 'white';
-    CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
-    game.drawBackground();
-};
+    /**
+     * Increments the score.
+     */
+    function incrementScore() {
+        score++;
+    };
 
-game.victoryScreen = function() {
-    CTX.font = game.largeFont;
-    CTX.fillStyle = 'white';
-    CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
-};
+    /**
+     * Decrements the score.
+     */
+    function decrementScore() {
+        score--;
+    };
 
-game.drawBackground = function() {
-    CTX.beginPath();
-    CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
-    CTX.fillStyle = gradient;
-    CTX.fill();
-    CTX.closePath();
-};
+    /**
+     * Resets the score to 0.
+     */
+    function resetScore() {
+        score = 0;
+    };
 
-game.drawTitle = function() {
-    CTX.font = game.largeFont;
-    CTX.fillStyle = 'white';
-    CTX.fillText('The', 20, CANVAS.height/2 - 5);
-    CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
-};
+    /**
+     * Draws the startScreen to the canvas.
+     */
+    function startScreen() {
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        drawBackground();
+        drawTitle();
+        MYAPP.boat.draw();
+    };
 
-game.drawScore = function() {
-    CTX.font = game.mediumFont;
-    CTX.fillStyle = 'white';
-    CTX.fillText(game.score, 20, 40);
-};
+    /**
+     * Handles the in game functions and draws everything to the canvas.
+     */
+    function gameLoop() {
+        drawBackground();
+        drawScore();
+        MYAPP.boat.draw();
+        MYAPP.boat.move();
+        MYAPP.shoal.drawAll();
+        MYAPP.hook.draw();
+        // End the game if no good fish remain
+        if (MYAPP.shoal.fish.length == 0) {
+            MYAPP.stateToVictory();
+        };
+    };
+    /**
+     * Draws the death screen to the canvas.
+     */
+    function deathScreen() {
+        CTX.font = largeFont;
+        CTX.fillStyle = 'white';
+        CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
+        drawBackground();
+    };
+
+    /**
+     * Draws the victory screen to the canvas.
+     */
+    function victoryScreen() {
+        CTX.font = largeFont;
+        CTX.fillStyle = 'white';
+        CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
+    };
+
+    /**
+     * Draws the standard background to the canvas.
+     */
+    function drawBackground() {
+        CTX.beginPath();
+        CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
+        CTX.fillStyle = gradient;
+        CTX.fill();
+        CTX.closePath();
+    };
+
+    /**
+     * Draws the title to the canvas.
+     */
+    function drawTitle() {
+        CTX.font = largeFont;
+        CTX.fillStyle = 'white';
+        CTX.fillText('The', 20, CANVAS.height/2 - 5);
+        CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
+    };
+
+    /**
+     * Draws the score to the canvas.
+     */
+    function drawScore() {
+        CTX.font = mediumFont;
+        CTX.fillStyle = 'white';
+        CTX.fillText(score, 20, 40);
+    };
+
+    return {
+        getScore: getScore,
+        incrementScore: incrementScore,
+        decrementScore: decrementScore,
+        resetScore: resetScore,
+        startScreen: startScreen,
+        gameLoop: gameLoop,
+        deathScreen: deathScreen,
+        victoryScreen: victoryScreen,
+        drawBackground: drawBackground,
+        drawTitle: drawTitle,
+        drawScore: drawScore,
+    };
+})();
 
 module.exports = {
-    Game: {
-        getScore: game.getScore,
-        incrementScore: game.incrementScore,
-        decrementScore: game.decrementScore,
-        resetScore: game.resetScore,
-        startScreen: game.startScreen,
-        gameLoop: game.gameLoop,
-        deathScreen: game.deathScreen,
-        victoryScreen: game.victoryScreen,
-        drawBackground: game.drawBackground,
-        drawTitle: game.drawTitle,
-        drawScore: game.drawScore,
-    },
+    game: game,
 };

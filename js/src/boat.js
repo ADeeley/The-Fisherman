@@ -9,7 +9,7 @@ const MYAPP = utilsModule.MYAPP;
  * @return {Boat} A boat object with only public properties and methods
  * visible.
  */
-const Boat = (function() {
+const boat = (function() {
     let x = CANVAS.width/2,
         y = CANVAS.height/2,
         speed = 3,
@@ -90,5 +90,5 @@ const Boat = (function() {
 })();
 
 module.exports = {
-    Boat: Boat,
+    boat: boat,
 };

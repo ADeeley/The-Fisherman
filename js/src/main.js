@@ -1,7 +1,7 @@
 'use strict';
 
-const game = require('./game.js').Game;
-const boat = require('./boat.js').Boat;
+const game = require('./game.js').game;
+const boat = require('./boat.js').boat;
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
