@@ -13,10 +13,12 @@ const boat = (function() {
     let x = CANVAS.width/2,
         y = CANVAS.height/2,
         speed = 3,
-        w = 50,
-        h = 30,
-        // 0 represents left, 1 represents right
-        direction = 0,
+        width = 50,
+        height = 30,
+        left = -1,
+        right = 1,
+        // -1 represents left, 1 represents right
+        direction = left,
         // Boat sprite setup
         boatSprite = new Image();
         boatSprite.src = 'img/boat.png';
@@ -46,14 +48,14 @@ const boat = (function() {
      * Draws the boat to the CANVAS.
      */
     function draw() {
-        if (direction === 0) {
+        if (direction === left) {
             // Draw left sprite
-            CTX.drawImage(boatSprite, 0, 0, w, h,
-                    x, y - h, w, h);
-        } else if (direction === 1) {
+            CTX.drawImage(boatSprite, 0, 0, width, height,
+                    x, y - height, width, height);
+        } else if (direction === right) {
             // Draw right sprite
-            CTX.drawImage(boatSprite, 50, 0, w, h,
-                    x, y - h, w, h);
+            CTX.drawImage(boatSprite, 50, 0, width, height,
+                    x, y - height, width, height);
         }
     };
 
@@ -64,13 +66,13 @@ const boat = (function() {
         if (MYAPP.keyDown.left && x >= 0) {
         x--;
         // console.log('left');
-            if (direction !== 0) {
-                direction = 0;
+            if (direction !== left) {
+                direction = left;
             }
-        } else if (MYAPP.keyDown.right && x <= CANVAS.width - w) {
+        } else if (MYAPP.keyDown.right && x <= CANVAS.width - width) {
         x++;
-            if (direction !== 1) {
-                direction = 1;
+            if (direction !== right) {
+                direction = right;
             }
         }
     };
@@ -79,8 +81,8 @@ const boat = (function() {
         getX: getX,
         getY: getY,
         speed: speed,
-        w: w,
-        h: h,
+        width: width,
+        height: height,
         direction: direction,
         getSpeed: getSpeed,
         draw: draw,

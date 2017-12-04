@@ -52,9 +52,9 @@ const hook = (function() {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
                 bottom = MYAPP.boat.getY() + height;
-                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
+                left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -68,9 +68,9 @@ const hook = (function() {
             for (i = 0; i < evilShoalLen; i++) {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
                 bottom = MYAPP.boat.getY() + height;
-                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
+                left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -90,7 +90,7 @@ const hook = (function() {
         if (dropped) {
             console.log('Boat x where it matters: ' + MYAPP.boat.getY());
             CTX.drawImage(hookSprite, 0, spriteHeight - height, 20,
-                          height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
+                          height, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                           MYAPP.boat.getY(), 20, height);
             MYAPP.hook.collision();
         }

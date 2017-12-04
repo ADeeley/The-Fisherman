@@ -14,43 +14,46 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Image} sprite A sprite image object
  */
 function Fish(x, y, w, h, sprite) {
-    let dir = 1;
+    let direction = 1,
+        right = 1,
+        left = -1,
+        speed = 2;
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.caught = false;
 
-    this.move = function() {
-        // Swim the fish in the specified direction
+    this.move = () => {
+        // Swim the fish in the specified directionection
         if (this.caught) {
             this.y = MYAPP.boat.getY() + MYAPP.hook.getHeight();
-            this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
+            this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
         if (this.x >= 0 && this.x <= CANVAS.width - this.w) {
-            if (dir === 1) {
+            if (direction === right) {
                 this.x++;
-            } else if (dir === -1) {
+            } else if (direction === left) {
                 this.x--;
             }
 
-            // Randomly change direction
+            // Randomly change directionection
             if (Math.random() > 0.99) {
-                dir *= -1;
+                direction *= left;
             }
         } else {
-            dir *= -1;
-            if (dir === 1) {
-                this.x += 2;
-            } else if (dir === -1) {
-                this.x -= 2;
+            direction *= left;
+            if (direction === right) {
+                this.x += speed;
+            } else if (direction === left) {
+                this.x -= speed;
             }
         }
     };
 
-    this.draw = function() {
-        if (dir === 1) {
+    this.draw = () => {
+        if (direction === 1) {
             CTX.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         } else {

@@ -14,10 +14,12 @@ const boat = (function() {
     let x = CANVAS.width/2,
         y = CANVAS.height/2,
         speed = 3,
-        w = 50,
-        h = 30,
-        // 0 represents left, 1 represents right
-        direction = 0,
+        width = 50,
+        height = 30,
+        left = -1,
+        right = 1,
+        // -1 represents left, 1 represents right
+        direction = left,
         // Boat sprite setup
         boatSprite = new Image();
         boatSprite.src = 'img/boat.png';
@@ -47,14 +49,14 @@ const boat = (function() {
      * Draws the boat to the CANVAS.
      */
     function draw() {
-        if (direction === 0) {
+        if (direction === left) {
             // Draw left sprite
-            CTX.drawImage(boatSprite, 0, 0, w, h,
-                    x, y - h, w, h);
-        } else if (direction === 1) {
+            CTX.drawImage(boatSprite, 0, 0, width, height,
+                    x, y - height, width, height);
+        } else if (direction === right) {
             // Draw right sprite
-            CTX.drawImage(boatSprite, 50, 0, w, h,
-                    x, y - h, w, h);
+            CTX.drawImage(boatSprite, 50, 0, width, height,
+                    x, y - height, width, height);
         }
     };
 
@@ -65,13 +67,13 @@ const boat = (function() {
         if (MYAPP.keyDown.left && x >= 0) {
         x--;
         // console.log('left');
-            if (direction !== 0) {
-                direction = 0;
+            if (direction !== left) {
+                direction = left;
             }
-        } else if (MYAPP.keyDown.right && x <= CANVAS.width - w) {
+        } else if (MYAPP.keyDown.right && x <= CANVAS.width - width) {
         x++;
-            if (direction !== 1) {
-                direction = 1;
+            if (direction !== right) {
+                direction = right;
             }
         }
     };
@@ -80,8 +82,8 @@ const boat = (function() {
         getX: getX,
         getY: getY,
         speed: speed,
-        w: w,
-        h: h,
+        width: width,
+        height: height,
         direction: direction,
         getSpeed: getSpeed,
         draw: draw,
@@ -111,43 +113,46 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Image} sprite A sprite image object
  */
 function Fish(x, y, w, h, sprite) {
-    let dir = 1;
+    let direction = 1,
+        right = 1,
+        left = -1,
+        speed = 2;
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.caught = false;
 
-    this.move = function() {
-        // Swim the fish in the specified direction
+    this.move = () => {
+        // Swim the fish in the specified directionection
         if (this.caught) {
             this.y = MYAPP.boat.getY() + MYAPP.hook.getHeight();
-            this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
+            this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
         if (this.x >= 0 && this.x <= CANVAS.width - this.w) {
-            if (dir === 1) {
+            if (direction === right) {
                 this.x++;
-            } else if (dir === -1) {
+            } else if (direction === left) {
                 this.x--;
             }
 
-            // Randomly change direction
+            // Randomly change directionection
             if (Math.random() > 0.99) {
-                dir *= -1;
+                direction *= left;
             }
         } else {
-            dir *= -1;
-            if (dir === 1) {
-                this.x += 2;
-            } else if (dir === -1) {
-                this.x -= 2;
+            direction *= left;
+            if (direction === right) {
+                this.x += speed;
+            } else if (direction === left) {
+                this.x -= speed;
             }
         }
     };
 
-    this.draw = function() {
-        if (dir === 1) {
+    this.draw = () => {
+        if (direction === 1) {
             CTX.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         } else {
@@ -358,9 +363,9 @@ const hook = (function() {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
                 bottom = MYAPP.boat.getY() + height;
-                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
+                left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -374,9 +379,9 @@ const hook = (function() {
             for (i = 0; i < evilShoalLen; i++) {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
                 bottom = MYAPP.boat.getY() + height;
-                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
+                left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -396,7 +401,7 @@ const hook = (function() {
         if (dropped) {
             console.log('Boat x where it matters: ' + MYAPP.boat.getY());
             CTX.drawImage(hookSprite, 0, spriteHeight - height, 20,
-                          height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
+                          height, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                           MYAPP.boat.getY(), 20, height);
             MYAPP.hook.collision();
         }
@@ -542,6 +547,8 @@ function Shoal(numGoodFish, numEvilFish) {
         i = 0,
         x = null,
         y = null,
+        width = 30,
+        height = 20,
         xDelta = CANVAS.width-30,
         yDelta = (CANVAS.height/2-20);
 
@@ -554,7 +561,7 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
+            fishArr.push(new Fish(x, y, width, height, goodFishSprite));
         }
 
         return fishArr;
@@ -566,14 +573,14 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
+            evilFishArr.push(new Fish(x, y, width, height, evilFishSprite));
         }
 
         return evilFishArr;
     })();
 
 
-    this.drawAll = function() {
+    this.drawAll = () => {
         i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
@@ -583,7 +590,7 @@ function Shoal(numGoodFish, numEvilFish) {
         }
     };
 
-    this.removeFish = function() {
+    this.removeFish = () => {
         i = 0;
 
         for (i; i < this.fish.length; i++) {
@@ -631,19 +638,19 @@ const CANVAS = document.getElementById('myCanvas'),
     shoal: null,
 };
 
-MYAPP.stateToStartScreen = function() {
+MYAPP.stateToStartScreen = () => {
     MYAPP.state = 'startScreen';
 };
 
-MYAPP.stateToStartGame = function() {
+MYAPP.stateToStartGame = () => {
     MYAPP.state = 'gameLoop';
 };
 
-MYAPP.stateToDeath = function() {
+MYAPP.stateToDeath = () => {
     MYAPP.state = 'death';
 };
 
-MYAPP.stateToVictory = function() {
+MYAPP.stateToVictory = () => {
     MYAPP.state = 'victory';
 };
 

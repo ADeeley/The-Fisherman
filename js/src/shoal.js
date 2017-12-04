@@ -17,6 +17,8 @@ function Shoal(numGoodFish, numEvilFish) {
         i = 0,
         x = null,
         y = null,
+        width = 30,
+        height = 20,
         xDelta = CANVAS.width-30,
         yDelta = (CANVAS.height/2-20);
 
@@ -29,7 +31,7 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
+            fishArr.push(new Fish(x, y, width, height, goodFishSprite));
         }
 
         return fishArr;
@@ -41,14 +43,14 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
+            evilFishArr.push(new Fish(x, y, width, height, evilFishSprite));
         }
 
         return evilFishArr;
     })();
 
 
-    this.drawAll = function() {
+    this.drawAll = () => {
         i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
@@ -58,7 +60,7 @@ function Shoal(numGoodFish, numEvilFish) {
         }
     };
 
-    this.removeFish = function() {
+    this.removeFish = () => {
         i = 0;
 
         for (i; i < this.fish.length; i++) {

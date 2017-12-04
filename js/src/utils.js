@@ -21,19 +21,19 @@ const CANVAS = document.getElementById('myCanvas'),
     shoal: null,
 };
 
-MYAPP.stateToStartScreen = function() {
+MYAPP.stateToStartScreen = () => {
     MYAPP.state = 'startScreen';
 };
 
-MYAPP.stateToStartGame = function() {
+MYAPP.stateToStartGame = () => {
     MYAPP.state = 'gameLoop';
 };
 
-MYAPP.stateToDeath = function() {
+MYAPP.stateToDeath = () => {
     MYAPP.state = 'death';
 };
 
-MYAPP.stateToVictory = function() {
+MYAPP.stateToVictory = () => {
     MYAPP.state = 'victory';
 };
 
