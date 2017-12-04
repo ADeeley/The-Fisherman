@@ -2,6 +2,7 @@
 
 const Game = require('./game.js').Game;
 const Boat = require('./boat.js').Boat;
+console.log(Boat);
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
@@ -17,7 +18,7 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  */
 function setup() {
     MYAPP.game = new Game();
-    MYAPP.boat = new Boat();
+    MYAPP.boat = Boat;
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(1, 4);
 };

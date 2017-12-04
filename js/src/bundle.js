@@ -7,45 +7,88 @@ const MYAPP = utilsModule.MYAPP;
 
 /**
  *  Constructor function for the boat object.
+ * @return {Boat} A boat object with only public properties and methods
+ * visible.
  */
-function Boat() {
-    this.x = canvas.width/2;
-    this.y = canvas.height/2;
-    this.speed = 3;
-    this.w = 50;
-    this.h = 30;
-    // 0 represents left, 1 represents right
-    this.direction = 0;
-    // Boat sprite setup
-    this.boatSprite = new Image();
-    this.boatSprite.src = 'img/boat.png';
+const Boat = (function() {
+    let x = canvas.width/2,
+        y = canvas.height/2,
+        speed = 3,
+        w = 50,
+        h = 30,
+        // 0 represents left, 1 represents right
+        direction = 0,
+        // Boat sprite setup
+        boatSprite = new Image();
+        boatSprite.src = 'img/boat.png';
 
-    this.draw = function() {
-        if (this.direction === 0) {
+    /**
+     * Getter for the speed of the boat,
+     * @return {Number} The speed of the boat.
+     */
+    function getSpeed() {
+        return speed;
+    }
+    /**
+     * Getter for the x coordinate of the boat,
+     * @return {Number} The x coordinate of the boat.
+     */
+    function getX() {
+        return x;
+    }
+    /**
+     * Getter for the y coordinate of the boat,
+     * @return {Number} The y coordinate of the boat.
+     */
+    function getY() {
+        return y;
+    }
+    /**
+     * Draws the boat to the canvas.
+     */
+    function draw() {
+        if (direction === 0) {
             // Draw left sprite
-            ctx.drawImage(this.boatSprite, 0, 0, this.w, this.h,
-                 this.x, this.y - this.h, this.w, this.h);
-        } else if (this.direction === 1) {
+            ctx.drawImage(boatSprite, 0, 0, w, h,
+                    x, y - h, w, h);
+        } else if (direction === 1) {
             // Draw right sprite
-            ctx.drawImage(this.boatSprite, 50, 0, this.w, this.h,
-                 this.x, this.y - this.h, this.w, this.h);
+            ctx.drawImage(boatSprite, 50, 0, w, h,
+                    x, y - h, w, h);
         }
     };
-    this.move = function() {
-        if (MYAPP.keyDown.left && this.x >= 0) {
-        this.x--;
+
+    /**
+     * Moves the boat in the direction dictated by the arrow keys.
+     */
+    function move() {
+        if (MYAPP.keyDown.left && x >= 0) {
+        x--;
         // console.log('left');
-            if (this.direction !== 0) {
-                this.direction = 0;
+            if (direction !== 0) {
+                direction = 0;
             }
-        } else if (MYAPP.keyDown.right && this.x <= canvas.width - this.w) {
-        this.x++;
-            if (this.direction !== 1) {
-                this.direction = 1;
+        } else if (MYAPP.keyDown.right && x <= canvas.width - w) {
+        x++;
+            if (direction !== 1) {
+                direction = 1;
             }
         }
     };
-}
+
+    return {
+        getX: getX,
+        getY: getY,
+        speed: speed,
+        w: w,
+        h: h,
+        direction: direction,
+        getSpeed: getSpeed,
+        draw: draw,
+        move: move,
+        boatSprite: boatSprite,
+    };
+})();
 
 module.exports = {
     Boat: Boat,
@@ -78,8 +121,8 @@ function Fish(x, y, w, h, sprite) {
     this.move = function() {
         // Swim the fish in the specified direction
         if (this.caught) {
-            this.y = MYAPP.boat.y + MYAPP.hook.height;
-            this.x = MYAPP.boat.x + MYAPP.boat.w/3;
+            this.y = MYAPP.boat.getY() + MYAPP.hook.height;
+            this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
             console.log('Raising fishie!');
         }
         if (this.x >= 0 && this.x <= canvas.width - this.w) {
@@ -241,9 +284,9 @@ function Hook() {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.x + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.y + this.height;
-                left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
+                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.getY() + this.height;
+                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -257,9 +300,9 @@ function Hook() {
             for (i = 0; i < evilShoalLen; i++) {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
-                right = MYAPP.boat.x + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.y + this.height;
-                left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
+                right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
+                bottom = MYAPP.boat.getY() + this.height;
+                left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
                      bottom < f.y || top > f.y + f.h)) {
@@ -274,9 +317,10 @@ function Hook() {
 
     this.draw = function() {
         if (dropped) {
+            console.log("Boat x where it matters: " + MYAPP.boat.getY());
             ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
-                          this.height, MYAPP.boat.x + MYAPP.boat.w / 3,
-                          MYAPP.boat.y, 20, this.height);
+                          this.height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
+                          MYAPP.boat.getY(), 20, this.height);
             MYAPP.hook.collision();
         }
         // Move the MYAPP.hook up and down
@@ -314,6 +358,7 @@ module.exports = {
 
 const Game = require('./game.js').Game;
 const Boat = require('./boat.js').Boat;
+console.log(Boat);
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
@@ -329,7 +374,7 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  */
 function setup() {
     MYAPP.game = new Game();
-    MYAPP.boat = new Boat();
+    MYAPP.boat = Boat;
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(1, 4);
 };
