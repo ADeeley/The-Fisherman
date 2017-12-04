@@ -1,8 +1,7 @@
 'use strict';
 
-const Game = require('./game.js').Game;
-const Boat = require('./boat.js').Boat;
-console.log(Boat);
+const game = require('./game.js').Game;
+const boat = require('./boat.js').Boat;
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
@@ -17,8 +16,8 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  * Instantiates all the game objects.
  */
 function setup() {
-    MYAPP.game = new Game();
-    MYAPP.boat = Boat;
+    MYAPP.game = game;
+    MYAPP.boat = boat;
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(3, 4);
 };
