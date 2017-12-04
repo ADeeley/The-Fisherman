@@ -1,8 +1,8 @@
 'use strict';
-const utils_module = require('./utils.js'),
-    ctx = utils_module.ctx,
-    canvas = utils_module.canvas,
-    MYAPP = utils_module.MYAPP;
+const utilsModule = require('./utils.js');
+const ctx = utilsModule.ctx;
+const canvas = utilsModule.canvas;
+const MYAPP = utilsModule.MYAPP;
 
 /**
  *  Constructor function for the boat object.
@@ -22,12 +22,14 @@ function Boat() {
     this.draw = function() {
         if (this.direction === 0) {
             // Draw left sprite
-            ctx.drawImage(this.boatSprite, 0, 0, this.w, this.h, this.x, this.y - this.h, this.w, this.h);
+            ctx.drawImage(this.boatSprite, 0, 0, this.w, this.h,
+                 this.x, this.y - this.h, this.w, this.h);
         } else if (this.direction === 1) {
             // Draw right sprite
-            ctx.drawImage(this.boatSprite, 50, 0, this.w, this.h, this.x, this.y - this.h, this.w, this.h);
+            ctx.drawImage(this.boatSprite, 50, 0, this.w, this.h,
+                 this.x, this.y - this.h, this.w, this.h);
         }
-    }
+    };
     this.move = function() {
         if (MYAPP.keyDown.left && this.x >= 0) {
         this.x--;
@@ -41,9 +43,9 @@ function Boat() {
                 this.direction = 1;
             }
         }
-    }
+    };
 }
 
 module.exports = {
     Boat: Boat,
-}
+};

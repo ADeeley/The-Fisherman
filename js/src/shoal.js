@@ -1,12 +1,17 @@
 'use strict';
 
-const utils_module = require('./utils.js'),
-    Fish = require('./fish.js').Fish,
-    ctx = utils_module.ctx,
-    canvas = utils_module.canvas,
-    MYAPP = utils_module.MYAPP;
+const utilsModule = require('./utils.js');
+const Fish = require('./fish.js').Fish;
+const canvas = utilsModule.canvas;
+const MYAPP = utilsModule.MYAPP;
 
-function Shoal(n, e) {
+/**
+ * Stores the evil fish array and good fish array and associated
+ * methods.
+ * @param {Number} numGoodFish The number of good fish required
+ * @param {Number} numEvilFish The number of evil fish required
+ */
+function Shoal(numGoodFish, numEvilFish) {
     let goodFishSprite = new Image(),
         evilFishSprite = new Image(),
         i = 0,
@@ -21,10 +26,10 @@ function Shoal(n, e) {
     this.fish = (() => {
         let fishArr = [];
 
-        for (i; i < n; i++) {
+        for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite))
+            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
         }
 
         return fishArr;
@@ -33,17 +38,17 @@ function Shoal(n, e) {
     this.evilFish = (() => {
         let evilFishArr = [];
 
-        for (i; i < e; i++) {
+        for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite))
+            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
         }
 
         return evilFishArr;
     })();
 
 
-    this.drawAll = function(){
+    this.drawAll = function() {
         i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
@@ -51,10 +56,9 @@ function Shoal(n, e) {
         for (i = 0; i < this.evilFish.length; i++) {
             this.evilFish[i].draw();
         }
-    }
+    };
 
-    this.removeFish = function(){
-    //Removes a fish from the relevant array
+    this.removeFish = function() {
         i = 0;
 
         for (i; i < this.fish.length; i++) {
@@ -71,9 +75,9 @@ function Shoal(n, e) {
                 MYAPP.game.score--;
             }
         }
-    }
+    };
 }
 
 module.exports = {
     Shoal: Shoal,
-}
+};

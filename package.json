@@ -17,7 +17,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify js/src/main.js js/src/boat.js -o js/src/bundle.js"
+    "build": "browserify js/src/main.js js/src/boat.js -o js/src/bundle.js",
+    "lint": "node_modules/.bin/eslint js/src/*"
   },
   "repository": {
     "type": "git",

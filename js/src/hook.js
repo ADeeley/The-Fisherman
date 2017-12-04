@@ -1,10 +1,13 @@
 'use strict';
 
-const utils_module = require('./utils.js'),
-    ctx = utils_module.ctx,
-    canvas = utils_module.canvas,
-    MYAPP = utils_module.MYAPP;
+const utilsModule = require('./utils.js');
+const ctx = utilsModule.ctx;
+const canvas = utilsModule.canvas;
+const MYAPP = utilsModule.MYAPP;
 
+/**
+ * Hook constructor function.
+ */
 function Hook() {
     let hookSprite = new Image(),
         spriteHeight = 248,
@@ -15,23 +18,22 @@ function Hook() {
 
     this.height = 20;
     hookSprite.src = 'img/hook.png';
-    
-    this.drop = function(){
+
+    this.drop = function() {
         dropped = true;
-    }
-        
+    };
+
     this.collision = function() {
         let i = 0,
             f = null,
-            tip = null,
             top = null,
-            right = null, 
+            right = null,
             bottom = null,
             left = null,
             shoalLen = MYAPP.shoal.fish.length,
             evilShoalLen = MYAPP.shoal.evilFish.length;
 
-        // Make a callback function to return true if the critereon are fulfilled
+        // Make a callback function to return true
         if (!fishHooked) {
             for (i; i < shoalLen; i++) {
                 f = MYAPP.shoal.fish[i];
@@ -40,21 +42,24 @@ function Hook() {
                 bottom = MYAPP.boat.y + this.height;
                 left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.w ||
+                     bottom < f.y || top > f.y + f.h)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
                     fishHooked = true;
                 }
             }
-            for (i = 0; i < MYAPP.shoal.evilFish.length; i++) {
+
+            for (i = 0; i < evilShoalLen; i++) {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
                 right = MYAPP.boat.x + MYAPP.boat.w / 3;
                 bottom = MYAPP.boat.y + this.height;
                 left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.w ||
+                     bottom < f.y || top > f.y + f.h)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
@@ -62,22 +67,24 @@ function Hook() {
                 }
             }
         }
-    }
-    this.draw = function(){
+    };
+
+    this.draw = function() {
         if (dropped) {
-            ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20, 
-                          this.height, MYAPP.boat.x + MYAPP.boat.w / 3, MYAPP.boat.y, 20, this.height);
+            ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
+                          this.height, MYAPP.boat.x + MYAPP.boat.w / 3,
+                          MYAPP.boat.y, 20, this.height);
             MYAPP.hook.collision();
         }
         // Move the MYAPP.hook up and down
         if (this.height < spriteHeight && dropped && !raising) {
             this.height++;
-            //console.log('increment height');
+            // console.log('increment height');
         } else if (dropped && raising) {
             this.height--;
-            //console.log('decrement height');
+            // console.log('decrement height');
         }
-        
+
         // Raise the MYAPP.hook upon reaching the sea bed
         if (this.height >= canvas.height/2 && dropped) {
             raising = true;
@@ -92,9 +99,9 @@ function Hook() {
             // Remove any caught fish from the MYAPP.shoal
             MYAPP.shoal.removeFish();
         }
-    }
+    };
 }
 
 module.exports = {
     Hook: Hook,
-}
+};
