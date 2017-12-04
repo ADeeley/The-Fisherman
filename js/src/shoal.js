@@ -65,14 +65,14 @@ function Shoal(numGoodFish, numEvilFish) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
-                MYAPP.game.score++;
+                MYAPP.game.incrementScore();
             }
         }
         for (i = 0; i < this.evilFish.length; i++) {
             if (this.evilFish[i].caught) {
                 this.evilFish.splice(i, 1);
                 console.log('Sliced fish array');
-                MYAPP.game.score--;
+                MYAPP.game.decrementScore();
             }
         }
     };

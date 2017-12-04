@@ -12,13 +12,22 @@ gradient.addColorStop(1, 'black');
  * Game constructor function
  */
 function Game() {
-    this.score = 0;
     let largeFont = '40pt Ariel',
-        mediumFont = '20pt Ariel';
+        mediumFont = '20pt Ariel',
+        score = 0;
 
-    /**
-     * The main MYAPP.game loop
-     */
+    this.getScore = function() {
+        return score;
+    };
+
+    this.incrementScore = function() {
+        score++;
+    };
+
+    this.decrementScore = function() {
+        score--;
+    };
+
     this.startScreen = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.drawBackground();
@@ -33,7 +42,7 @@ function Game() {
         MYAPP.boat.move();
         MYAPP.shoal.drawAll();
         MYAPP.hook.draw();
-        // End the MYAPP.game if no good fish remain
+        // End the game if no good fish remain
         if (MYAPP.shoal.fish.length == 0) {
             MYAPP.stateToVictory();
         };
@@ -70,7 +79,7 @@ function Game() {
     this.drawScore = function() {
         ctx.font = mediumFont;
         ctx.fillStyle = 'white';
-        ctx.fillText(this.score, 20, 40);
+        ctx.fillText(score, 20, 40);
     };
 }
 

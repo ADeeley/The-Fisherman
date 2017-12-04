@@ -177,13 +177,22 @@ gradient.addColorStop(1, 'black');
  * Game constructor function
  */
 function Game() {
-    this.score = 0;
     let largeFont = '40pt Ariel',
-        mediumFont = '20pt Ariel';
+        mediumFont = '20pt Ariel',
+        score = 0;
 
-    /**
-     * The main MYAPP.game loop
-     */
+    this.getScore = function() {
+        return score;
+    };
+
+    this.incrementScore = function() {
+        score++;
+    };
+
+    this.decrementScore = function() {
+        score--;
+    };
+
     this.startScreen = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.drawBackground();
@@ -235,7 +244,7 @@ function Game() {
     this.drawScore = function() {
         ctx.font = mediumFont;
         ctx.fillStyle = 'white';
-        ctx.fillText(this.score, 20, 40);
+        ctx.fillText(score, 20, 40);
     };
 }
 
@@ -376,7 +385,7 @@ function setup() {
     MYAPP.game = new Game();
     MYAPP.boat = Boat;
     MYAPP.hook = new Hook();
-    MYAPP.shoal = new Shoal(1, 4);
+    MYAPP.shoal = new Shoal(3, 4);
 };
 
 /**
@@ -506,14 +515,14 @@ function Shoal(numGoodFish, numEvilFish) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
-                MYAPP.game.score++;
+                MYAPP.game.incrementScore();
             }
         }
         for (i = 0; i < this.evilFish.length; i++) {
             if (this.evilFish[i].caught) {
                 this.evilFish.splice(i, 1);
                 console.log('Sliced fish array');
-                MYAPP.game.score--;
+                MYAPP.game.decrementScore();
             }
         }
     };

@@ -20,7 +20,7 @@ function setup() {
     MYAPP.game = new Game();
     MYAPP.boat = Boat;
     MYAPP.hook = new Hook();
-    MYAPP.shoal = new Shoal(1, 4);
+    MYAPP.shoal = new Shoal(3, 4);
 };
 
 /**
