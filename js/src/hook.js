@@ -11,9 +11,9 @@ function Hook() {
         dropped = false,
         raising = false,
         hookSz = 20,
-        fishHooked = false,
-        height = 20;
+        fishHooked = false;
 
+    this.height = 20;
     hookSprite.src = 'img/hook.png';
     
     this.drop = function(){
@@ -37,7 +37,7 @@ function Hook() {
                 f = MYAPP.shoal.fish[i];
                 top = bottom - hookSz;
                 right = MYAPP.boat.x + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.y + height;
+                bottom = MYAPP.boat.y + this.height;
                 left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
@@ -51,7 +51,7 @@ function Hook() {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
                 right = MYAPP.boat.x + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.y + height;
+                bottom = MYAPP.boat.y + this.height;
                 left = MYAPP.boat.x + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w || bottom < f.y || top > f.y + f.h)) {
@@ -65,26 +65,26 @@ function Hook() {
     }
     this.draw = function(){
         if (dropped) {
-            ctx.drawImage(hookSprite, 0, spriteHeight - height, 20, 
-                          height, MYAPP.boat.x + MYAPP.boat.w / 3, MYAPP.boat.y, 20, height);
+            ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20, 
+                          this.height, MYAPP.boat.x + MYAPP.boat.w / 3, MYAPP.boat.y, 20, this.height);
             MYAPP.hook.collision();
         }
         // Move the MYAPP.hook up and down
-        if (height < spriteHeight && dropped && !raising) {
-            height++;
+        if (this.height < spriteHeight && dropped && !raising) {
+            this.height++;
             //console.log('increment height');
         } else if (dropped && raising) {
-            height--;
+            this.height--;
             //console.log('decrement height');
         }
         
         // Raise the MYAPP.hook upon reaching the sea bed
-        if (height >= canvas.height/2 && dropped) {
+        if (this.height >= canvas.height/2 && dropped) {
             raising = true;
         }
 
         // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-        if (height <= 0 && dropped) {
+        if (this.height <= 0 && dropped) {
             dropped = false;
             raising = false;
             fishHooked = false;
