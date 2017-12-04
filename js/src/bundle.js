@@ -121,7 +121,7 @@ function Fish(x, y, w, h, sprite) {
     this.move = function() {
         // Swim the fish in the specified direction
         if (this.caught) {
-            this.y = MYAPP.boat.getY() + MYAPP.hook.height;
+            this.y = MYAPP.boat.getY() + MYAPP.hook.getHeight();
             this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
             console.log('Raising fishie!');
         }
@@ -314,22 +314,60 @@ const MYAPP = utilsModule.MYAPP;
 /**
  * Hook constructor function.
  */
-function Hook() {
+const hook = (function() {
     let hookSprite = new Image(),
         spriteHeight = 248,
         dropped = false,
         raising = false,
         hookSz = 20,
-        fishHooked = false;
+        fishHooked = false,
+        height = 20;
 
-    this.height = 20;
     hookSprite.src = 'img/hook.png';
 
-    this.drop = function() {
+    /**
+     * Returns the height of the hook.
+     * @return {Number} The hook height.
+     */
+    function getHeight() {
+        return height;
+    }
+
+    /**
+     * Sets the drop state to true;
+     */
+    function drop() {
         dropped = true;
     };
 
-    this.collision = function() {
+    /**
+     * Get the current dropping state of the hook.
+     * @return {Boolean} the raising state of the hook.
+     */
+    function hasDropped() {
+        return dropped;
+    };
+
+    /**
+     * Get the current raising state of the hook.
+     * @return {Boolean} the raising state of the hook.
+     */
+    function isRaising() {
+        return raising;
+    };
+
+    /**
+     * Returns true if the hook has caught a fish
+     * @return {Boolean} If a fish has been hooked.
+     */
+    function hasHookedFish() {
+        return fishHooked;
+    };
+
+    /**
+     * Handles the collision detection for hook.
+     */
+    function collision() {
         let i = 0,
             f = null,
             top = null,
@@ -345,7 +383,7 @@ function Hook() {
                 f = MYAPP.shoal.fish[i];
                 top = bottom - hookSz;
                 right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.getY() + this.height;
+                bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
@@ -361,7 +399,7 @@ function Hook() {
                 f = MYAPP.shoal.evilFish[i];
                 top = bottom - hookSz;
                 right = MYAPP.boat.getX() + MYAPP.boat.w / 3;
-                bottom = MYAPP.boat.getY() + this.height;
+                bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.w / 3 + hookSz;
 
                 if (!(left < f.x || right > f.x + f.w ||
@@ -375,30 +413,33 @@ function Hook() {
         }
     };
 
-    this.draw = function() {
+    /**
+     * Draws the hook to the canvas.
+     */
+    function draw() {
         if (dropped) {
-            console.log("Boat x where it matters: " + MYAPP.boat.getY());
-            CTX.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
-                          this.height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
-                          MYAPP.boat.getY(), 20, this.height);
+            console.log('Boat x where it matters: ' + MYAPP.boat.getY());
+            CTX.drawImage(hookSprite, 0, spriteHeight - height, 20,
+                          height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
+                          MYAPP.boat.getY(), 20, height);
             MYAPP.hook.collision();
         }
         // Move the MYAPP.hook up and down
-        if (this.height < spriteHeight && dropped && !raising) {
-            this.height++;
+        if (height < spriteHeight && dropped && !raising) {
+            height++;
             // console.log('increment height');
         } else if (dropped && raising) {
-            this.height--;
+            height--;
             // console.log('decrement height');
         }
 
         // Raise the MYAPP.hook upon reaching the sea bed
-        if (this.height >= CANVAS.height/2 && dropped) {
+        if (height >= CANVAS.height/2 && dropped) {
             raising = true;
         }
 
         // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-        if (this.height <= 0 && dropped) {
+        if (height <= 0 && dropped) {
             dropped = false;
             raising = false;
             fishHooked = false;
@@ -407,10 +448,25 @@ function Hook() {
             MYAPP.shoal.removeFish();
         }
     };
-}
+
+    return {
+        hookSprite: hookSprite,
+        spriteHeight: spriteHeight,
+        hasDropped: hasDropped,
+        isRaising: isRaising,
+        hookSz: hookSz,
+        hasHookedFish: hasHookedFish,
+        getHeight: getHeight,
+        drop: drop,
+        hasDropped: hasDropped,
+        isRaising: isRaising,
+        collision: collision,
+        draw: draw,
+    };
+})();
 
 module.exports = {
-    Hook: Hook,
+    hook: hook,
 };
 
 },{"./utils.js":7}],5:[function(require,module,exports){
@@ -418,7 +474,7 @@ module.exports = {
 
 const game = require('./game.js').game;
 const boat = require('./boat.js').boat;
-const Hook = require('./hook.js').Hook;
+const hook = require('./hook.js').hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
@@ -435,7 +491,7 @@ function setup() {
     MYAPP.game = game;
     MYAPP.game.resetScore();
     MYAPP.boat = boat;
-    MYAPP.hook = new Hook();
+    MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
 };
 

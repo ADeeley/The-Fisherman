@@ -2,7 +2,7 @@
 
 const game = require('./game.js').game;
 const boat = require('./boat.js').boat;
-const Hook = require('./hook.js').Hook;
+const hook = require('./hook.js').hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
@@ -19,7 +19,7 @@ function setup() {
     MYAPP.game = game;
     MYAPP.game.resetScore();
     MYAPP.boat = boat;
-    MYAPP.hook = new Hook();
+    MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
 };
 
