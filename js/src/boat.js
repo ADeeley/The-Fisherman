@@ -1,7 +1,7 @@
 'use strict';
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -10,8 +10,8 @@ const MYAPP = utilsModule.MYAPP;
  * visible.
  */
 const Boat = (function() {
-    let x = canvas.width/2,
-        y = canvas.height/2,
+    let x = CANVAS.width/2,
+        y = CANVAS.height/2,
         speed = 3,
         w = 50,
         h = 30,
@@ -43,16 +43,16 @@ const Boat = (function() {
         return y;
     }
     /**
-     * Draws the boat to the canvas.
+     * Draws the boat to the CANVAS.
      */
     function draw() {
         if (direction === 0) {
             // Draw left sprite
-            ctx.drawImage(boatSprite, 0, 0, w, h,
+            CTX.drawImage(boatSprite, 0, 0, w, h,
                     x, y - h, w, h);
         } else if (direction === 1) {
             // Draw right sprite
-            ctx.drawImage(boatSprite, 50, 0, w, h,
+            CTX.drawImage(boatSprite, 50, 0, w, h,
                     x, y - h, w, h);
         }
     };
@@ -67,7 +67,7 @@ const Boat = (function() {
             if (direction !== 0) {
                 direction = 0;
             }
-        } else if (MYAPP.keyDown.right && x <= canvas.width - w) {
+        } else if (MYAPP.keyDown.right && x <= CANVAS.width - w) {
         x++;
             if (direction !== 1) {
                 direction = 1;

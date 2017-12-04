@@ -1,7 +1,7 @@
 'use strict';
 
-const canvas = document.getElementById('myCanvas'),
-    ctx = canvas.getContext('2d'),
+const CANVAS = document.getElementById('myCanvas'),
+    CTX = CANVAS.getContext('2d'),
     MYAPP = {
     keyDown: {
         left: false,
@@ -39,6 +39,6 @@ MYAPP.stateToVictory = function() {
 
 module.exports = {
     MYAPP: MYAPP,
-    canvas: canvas,
-    ctx: ctx,
+    CANVAS: CANVAS,
+    CTX: CTX,
 };

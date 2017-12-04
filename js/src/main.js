@@ -5,8 +5,8 @@ const boat = require('./boat.js').Boat;
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 window.addEventListener('keydown', keyDownEventHandler, false);
@@ -17,6 +17,7 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  */
 function setup() {
     MYAPP.game = game;
+    MYAPP.game.resetScore();
     MYAPP.boat = boat;
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(3, 4);
@@ -67,7 +68,7 @@ function mainLoop() {
         MYAPP.game.startScreen();
         setup();
     } else if (MYAPP.state === 'gameLoop') {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         MYAPP.game.gameLoop();
     } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();

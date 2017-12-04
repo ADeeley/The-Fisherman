@@ -1,10 +1,10 @@
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
-const gradient = ctx.createLinearGradient(0, canvas.height/2, 0, 500);
+const gradient = CTX.createLinearGradient(0, CANVAS.height/2, 0, 500);
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 
@@ -29,8 +29,12 @@ game.decrementScore = function() {
     game.score--;
 };
 
+game.resetScore = function() {
+    game.score = 0;
+};
+
 game.startScreen = function() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     game.drawBackground();
     game.drawTitle();
     MYAPP.boat.draw();
@@ -50,37 +54,37 @@ game.gameLoop = function() {
 };
 
 game.deathScreen = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('You died!', canvas.width/4, canvas.height/4);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
     game.drawBackground();
 };
 
 game.victoryScreen = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('You won!', canvas.width/4, canvas.height/4);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
 };
 
 game.drawBackground = function() {
-    ctx.beginPath();
-    ctx.rect(0, canvas.height/2, canvas.width, canvas.height);
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    ctx.closePath();
+    CTX.beginPath();
+    CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
+    CTX.fillStyle = gradient;
+    CTX.fill();
+    CTX.closePath();
 };
 
 game.drawTitle = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('The', 20, canvas.height/2 - 5);
-    ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('The', 20, CANVAS.height/2 - 5);
+    CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
 };
 
 game.drawScore = function() {
-    ctx.font = game.mediumFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText(game.score, 20, 40);
+    CTX.font = game.mediumFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText(game.score, 20, 40);
 };
 
 module.exports = {
@@ -88,6 +92,7 @@ module.exports = {
         getScore: game.getScore,
         incrementScore: game.incrementScore,
         decrementScore: game.decrementScore,
+        resetScore: game.resetScore,
         startScreen: game.startScreen,
         gameLoop: game.gameLoop,
         deathScreen: game.deathScreen,

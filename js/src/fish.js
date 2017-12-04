@@ -1,8 +1,8 @@
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -28,7 +28,7 @@ function Fish(x, y, w, h, sprite) {
             this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
             console.log('Raising fishie!');
         }
-        if (this.x >= 0 && this.x <= canvas.width - this.w) {
+        if (this.x >= 0 && this.x <= CANVAS.width - this.w) {
             if (dir === 1) {
                 this.x++;
             } else if (dir === -1) {
@@ -51,10 +51,10 @@ function Fish(x, y, w, h, sprite) {
 
     this.draw = function() {
         if (dir === 1) {
-            ctx.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
+            CTX.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         } else {
-            ctx.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
+            CTX.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         }
         this.move();

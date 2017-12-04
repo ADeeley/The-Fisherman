@@ -2,7 +2,7 @@
 
 const utilsModule = require('./utils.js');
 const Fish = require('./fish.js').Fish;
-const canvas = utilsModule.canvas;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -17,8 +17,8 @@ function Shoal(numGoodFish, numEvilFish) {
         i = 0,
         x = null,
         y = null,
-        xDelta = canvas.width-30,
-        yDelta = (canvas.height/2-20);
+        xDelta = CANVAS.width-30,
+        yDelta = (CANVAS.height/2-20);
 
     evilFishSprite.src = 'img/evilfish.png';
     goodFishSprite.src = 'img/goldfish.png';
@@ -28,7 +28,7 @@ function Shoal(numGoodFish, numEvilFish) {
 
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
             fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
         }
 
@@ -40,7 +40,7 @@ function Shoal(numGoodFish, numEvilFish) {
 
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
             evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
         }
 

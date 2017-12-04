@@ -1,8 +1,8 @@
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -72,7 +72,7 @@ function Hook() {
     this.draw = function() {
         if (dropped) {
             console.log("Boat x where it matters: " + MYAPP.boat.getY());
-            ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
+            CTX.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
                           this.height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
                           MYAPP.boat.getY(), 20, this.height);
             MYAPP.hook.collision();
@@ -87,7 +87,7 @@ function Hook() {
         }
 
         // Raise the MYAPP.hook upon reaching the sea bed
-        if (this.height >= canvas.height/2 && dropped) {
+        if (this.height >= CANVAS.height/2 && dropped) {
             raising = true;
         }
 

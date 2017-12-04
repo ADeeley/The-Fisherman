@@ -1,8 +1,8 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -11,8 +11,8 @@ const MYAPP = utilsModule.MYAPP;
  * visible.
  */
 const Boat = (function() {
-    let x = canvas.width/2,
-        y = canvas.height/2,
+    let x = CANVAS.width/2,
+        y = CANVAS.height/2,
         speed = 3,
         w = 50,
         h = 30,
@@ -44,16 +44,16 @@ const Boat = (function() {
         return y;
     }
     /**
-     * Draws the boat to the canvas.
+     * Draws the boat to the CANVAS.
      */
     function draw() {
         if (direction === 0) {
             // Draw left sprite
-            ctx.drawImage(boatSprite, 0, 0, w, h,
+            CTX.drawImage(boatSprite, 0, 0, w, h,
                     x, y - h, w, h);
         } else if (direction === 1) {
             // Draw right sprite
-            ctx.drawImage(boatSprite, 50, 0, w, h,
+            CTX.drawImage(boatSprite, 50, 0, w, h,
                     x, y - h, w, h);
         }
     };
@@ -68,7 +68,7 @@ const Boat = (function() {
             if (direction !== 0) {
                 direction = 0;
             }
-        } else if (MYAPP.keyDown.right && x <= canvas.width - w) {
+        } else if (MYAPP.keyDown.right && x <= CANVAS.width - w) {
         x++;
             if (direction !== 1) {
                 direction = 1;
@@ -98,8 +98,8 @@ module.exports = {
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -125,7 +125,7 @@ function Fish(x, y, w, h, sprite) {
             this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
             console.log('Raising fishie!');
         }
-        if (this.x >= 0 && this.x <= canvas.width - this.w) {
+        if (this.x >= 0 && this.x <= CANVAS.width - this.w) {
             if (dir === 1) {
                 this.x++;
             } else if (dir === -1) {
@@ -148,10 +148,10 @@ function Fish(x, y, w, h, sprite) {
 
     this.draw = function() {
         if (dir === 1) {
-            ctx.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
+            CTX.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         } else {
-            ctx.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
+            CTX.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
                           this.w, this.h);
         }
         this.move();
@@ -166,10 +166,10 @@ module.exports = {
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
-const gradient = ctx.createLinearGradient(0, canvas.height/2, 0, 500);
+const gradient = CTX.createLinearGradient(0, CANVAS.height/2, 0, 500);
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 
@@ -194,8 +194,12 @@ game.decrementScore = function() {
     game.score--;
 };
 
+game.resetScore = function() {
+    game.score = 0;
+};
+
 game.startScreen = function() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
     game.drawBackground();
     game.drawTitle();
     MYAPP.boat.draw();
@@ -215,37 +219,37 @@ game.gameLoop = function() {
 };
 
 game.deathScreen = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('You died!', canvas.width/4, canvas.height/4);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
     game.drawBackground();
 };
 
 game.victoryScreen = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('You won!', canvas.width/4, canvas.height/4);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
 };
 
 game.drawBackground = function() {
-    ctx.beginPath();
-    ctx.rect(0, canvas.height/2, canvas.width, canvas.height);
-    ctx.fillStyle = gradient;
-    ctx.fill();
-    ctx.closePath();
+    CTX.beginPath();
+    CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
+    CTX.fillStyle = gradient;
+    CTX.fill();
+    CTX.closePath();
 };
 
 game.drawTitle = function() {
-    ctx.font = game.largeFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText('The', 20, canvas.height/2 - 5);
-    ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
+    CTX.font = game.largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('The', 20, CANVAS.height/2 - 5);
+    CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
 };
 
 game.drawScore = function() {
-    ctx.font = game.mediumFont;
-    ctx.fillStyle = 'white';
-    ctx.fillText(game.score, 20, 40);
+    CTX.font = game.mediumFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText(game.score, 20, 40);
 };
 
 module.exports = {
@@ -253,6 +257,7 @@ module.exports = {
         getScore: game.getScore,
         incrementScore: game.incrementScore,
         decrementScore: game.decrementScore,
+        resetScore: game.resetScore,
         startScreen: game.startScreen,
         gameLoop: game.gameLoop,
         deathScreen: game.deathScreen,
@@ -267,8 +272,8 @@ module.exports = {
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -338,7 +343,7 @@ function Hook() {
     this.draw = function() {
         if (dropped) {
             console.log("Boat x where it matters: " + MYAPP.boat.getY());
-            ctx.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
+            CTX.drawImage(hookSprite, 0, spriteHeight - this.height, 20,
                           this.height, MYAPP.boat.getX() + MYAPP.boat.w / 3,
                           MYAPP.boat.getY(), 20, this.height);
             MYAPP.hook.collision();
@@ -353,7 +358,7 @@ function Hook() {
         }
 
         // Raise the MYAPP.hook upon reaching the sea bed
-        if (this.height >= canvas.height/2 && dropped) {
+        if (this.height >= CANVAS.height/2 && dropped) {
             raising = true;
         }
 
@@ -381,8 +386,8 @@ const boat = require('./boat.js').Boat;
 const Hook = require('./hook.js').Hook;
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 window.addEventListener('keydown', keyDownEventHandler, false);
@@ -393,6 +398,7 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  */
 function setup() {
     MYAPP.game = game;
+    MYAPP.game.resetScore();
     MYAPP.boat = boat;
     MYAPP.hook = new Hook();
     MYAPP.shoal = new Shoal(3, 4);
@@ -443,7 +449,7 @@ function mainLoop() {
         MYAPP.game.startScreen();
         setup();
     } else if (MYAPP.state === 'gameLoop') {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         MYAPP.game.gameLoop();
     } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();
@@ -462,7 +468,7 @@ setInterval(mainLoop, 10);
 
 const utilsModule = require('./utils.js');
 const Fish = require('./fish.js').Fish;
-const canvas = utilsModule.canvas;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 /**
@@ -477,8 +483,8 @@ function Shoal(numGoodFish, numEvilFish) {
         i = 0,
         x = null,
         y = null,
-        xDelta = canvas.width-30,
-        yDelta = (canvas.height/2-20);
+        xDelta = CANVAS.width-30,
+        yDelta = (CANVAS.height/2-20);
 
     evilFishSprite.src = 'img/evilfish.png';
     goodFishSprite.src = 'img/goldfish.png';
@@ -488,7 +494,7 @@ function Shoal(numGoodFish, numEvilFish) {
 
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
             fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
         }
 
@@ -500,7 +506,7 @@ function Shoal(numGoodFish, numEvilFish) {
 
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
+            y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
             evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
         }
 
@@ -545,8 +551,8 @@ module.exports = {
 },{"./fish.js":2,"./utils.js":7}],7:[function(require,module,exports){
 'use strict';
 
-const canvas = document.getElementById('myCanvas'),
-    ctx = canvas.getContext('2d'),
+const CANVAS = document.getElementById('myCanvas'),
+    CTX = CANVAS.getContext('2d'),
     MYAPP = {
     keyDown: {
         left: false,
@@ -584,8 +590,8 @@ MYAPP.stateToVictory = function() {
 
 module.exports = {
     MYAPP: MYAPP,
-    canvas: canvas,
-    ctx: ctx,
+    CANVAS: CANVAS,
+    CTX: CTX,
 };
 
 },{}]},{},[5,1]);
