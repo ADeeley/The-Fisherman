@@ -35,30 +35,6 @@ const hook = (function() {
     };
 
     /**
-     * Get the current dropping state of the hook.
-     * @return {Boolean} the raising state of the hook.
-     */
-    function hasDropped() {
-        return dropped;
-    };
-
-    /**
-     * Get the current raising state of the hook.
-     * @return {Boolean} the raising state of the hook.
-     */
-    function isRaising() {
-        return raising;
-    };
-
-    /**
-     * Returns true if the hook has caught a fish
-     * @return {Boolean} If a fish has been hooked.
-     */
-    function hasHookedFish() {
-        return fishHooked;
-    };
-
-    /**
      * Handles the collision detection for hook.
      */
     function collision() {
@@ -144,16 +120,8 @@ const hook = (function() {
     };
 
     return {
-        hookSprite: hookSprite,
-        spriteHeight: spriteHeight,
-        hasDropped: hasDropped,
-        isRaising: isRaising,
-        hookSz: hookSz,
-        hasHookedFish: hasHookedFish,
         getHeight: getHeight,
         drop: drop,
-        hasDropped: hasDropped,
-        isRaising: isRaising,
         collision: collision,
         draw: draw,
     };
