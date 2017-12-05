@@ -29,20 +29,27 @@ function setup() {
  * @param {Number} e The key that was pressed.
  */
 function keyDownEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.SPACE) {
-        if (MYAPP.state === 'startScreen') {
+    switch (e.keyCode) {
+    case MYAPP.keys.SPACE:
+        switch (MYAPP.state) {
+        case 'startScreen':
             MYAPP.stateToStartGame();
-        } else if (MYAPP.state === 'gameLoop') {
+            break;
+        case 'gameLoop':
             MYAPP.hook.drop();
-        } else if (MYAPP.state === 'victory') {
+            break;
+        case 'victory':
             MYAPP.stateToStartScreen();
+            break;
         }
-    } else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+        break;
+    case MYAPP.keys.A_KEY:
             MYAPP.keyDown.left = true;
-        } else if (e.keyCode === MYAPP.keys.D_Key &&
-            MYAPP.state === 'gameLoop') {
-                MYAPP.keyDown.right = true;
-        }
+        break;
+    case MYAPP.keys.D_KEY:
+            MYAPP.keyDown.right = true;
+        break;
+    }
 };
 
 /**
@@ -53,10 +60,13 @@ function keyDownEventHandler(e) {
  * @param {Number} e The key that was pressed.
  */
 function keyUpEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.A_KEY) {
+    switch (e.keyCode) {
+    case MYAPP.keys.A_KEY:
         MYAPP.keyDown.left = false;
-    } else if (e.keyCode === MYAPP.keys.D_Key) {
+        break;
+    case MYAPP.keys.D_KEY:
         MYAPP.keyDown.right = false;
+        break;
     }
 };
 

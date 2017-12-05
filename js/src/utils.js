@@ -10,7 +10,7 @@ const CANVAS = document.getElementById('myCanvas'),
     keys: {
         SPACE: 32,
         A_KEY: 65,
-        D_Key: 68,
+        D_KEY: 68,
         LEFT_KEY: 37,
         RIGHT_KEY: 39,
     },

@@ -108,19 +108,19 @@ const MYAPP = utilsModule.MYAPP;
  * Fish constructor function
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
- * @param {Number} w The width of the fish
- * @param {Number} h The height of the fish
+ * @param {Number} width The widthidth of the fish
+ * @param {Number} height The height of the fish
  * @param {Image} sprite A sprite image object
  */
-function Fish(x, y, w, h, sprite) {
+function Fish(x, y, width, height, sprite) {
     let direction = 1,
         right = 1,
         left = -1,
         speed = 2;
     this.x = x;
     this.y = y;
-    this.w = w;
-    this.h = h;
+    this.width = width;
+    this.height = height;
     this.caught = false;
 
     this.move = () => {
@@ -130,7 +130,7 @@ function Fish(x, y, w, h, sprite) {
             this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
-        if (this.x >= 0 && this.x <= CANVAS.width - this.w) {
+        if (this.x >= 0 && this.x <= CANVAS.width - this.width) {
             if (direction === right) {
                 this.x++;
             } else if (direction === left) {
@@ -153,11 +153,11 @@ function Fish(x, y, w, h, sprite) {
 
     this.draw = () => {
         if (direction === 1) {
-            CTX.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
-                          this.w, this.h);
+            CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
+                          this.width, this.height);
         } else {
-            CTX.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
-                          this.w, this.h);
+            CTX.drawImage(sprite, 0, 0, this.width, this.height, this.x, this.y,
+                          this.width, this.height);
         }
         this.move();
     };
@@ -474,20 +474,27 @@ function setup() {
  * @param {Number} e The key that was pressed.
  */
 function keyDownEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.SPACE) {
-        if (MYAPP.state === 'startScreen') {
+    switch (e.keyCode) {
+    case MYAPP.keys.SPACE:
+        switch (MYAPP.state) {
+        case 'startScreen':
             MYAPP.stateToStartGame();
-        } else if (MYAPP.state === 'gameLoop') {
+            break;
+        case 'gameLoop':
             MYAPP.hook.drop();
-        } else if (MYAPP.state === 'victory') {
+            break;
+        case 'victory':
             MYAPP.stateToStartScreen();
+            break;
         }
-    } else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+        break;
+    case MYAPP.keys.A_KEY:
             MYAPP.keyDown.left = true;
-        } else if (e.keyCode === MYAPP.keys.D_Key &&
-            MYAPP.state === 'gameLoop') {
-                MYAPP.keyDown.right = true;
-        }
+        break;
+    case MYAPP.keys.D_KEY:
+            MYAPP.keyDown.right = true;
+        break;
+    }
 };
 
 /**
@@ -498,10 +505,13 @@ function keyDownEventHandler(e) {
  * @param {Number} e The key that was pressed.
  */
 function keyUpEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.A_KEY) {
+    switch (e.keyCode) {
+    case MYAPP.keys.A_KEY:
         MYAPP.keyDown.left = false;
-    } else if (e.keyCode === MYAPP.keys.D_Key) {
+        break;
+    case MYAPP.keys.D_KEY:
         MYAPP.keyDown.right = false;
+        break;
     }
 };
 
@@ -627,7 +637,7 @@ const CANVAS = document.getElementById('myCanvas'),
     keys: {
         SPACE: 32,
         A_KEY: 65,
-        D_Key: 68,
+        D_KEY: 68,
         LEFT_KEY: 37,
         RIGHT_KEY: 39,
     },
