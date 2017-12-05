@@ -81,7 +81,7 @@ function gameLoop() {
     MYAPP.boat.draw();
     MYAPP.boat.move();
     MYAPP.shoal.drawAll();
-    MYAPP.hook.draw();
+    MYAPP.hook.update();
     // End the game if no good fish remain
     if (MYAPP.shoal.fish.length == 0) {
         MYAPP.stateToVictory();

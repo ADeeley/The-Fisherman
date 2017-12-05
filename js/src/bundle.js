@@ -332,11 +332,17 @@ const MYAPP = utilsModule.MYAPP;
 
 let hookSprite = new Image(),
     spriteHeight = 248,
+    spriteWidth = 20,
     dropped = false,
     raising = false,
     hookSz = 20,
     fishHooked = false,
-    ropeLen = 20;
+    ropeLen = 20,
+    x = null,
+    y = CANVAS.height / 2,
+    sx = 0,
+    sy = spriteHeight - ropeLen;
+
 
 hookSprite.src = 'img/hook.png';
 /**
@@ -407,15 +413,23 @@ function collision() {
  * Draws the hook to the canvas.
  */
 function draw() {
+    x = MYAPP.boat.getX() + MYAPP.boat.width / 3;
+    sy = spriteHeight - ropeLen;
+    CTX.drawImage(hookSprite, sx, sy, spriteWidth, ropeLen, x, y,
+    spriteWidth, ropeLen);
+}
+
+/**
+ * Manages the hook depending upon the state of the parameters.
+ */
+function update() {
     /* DEBUG ====================
     let data = 'sprite height: ' + spriteHeight + ' dropped: ' + dropped + ' raising ' + raising +
     ' fishHooked ' + fishHooked + ' ropeLen ' + ropeLen;
     console.log('HookDebug: ' + data);
     */
     if (dropped) {
-        CTX.drawImage(hookSprite, 0, spriteHeight - ropeLen, 20,
-                        ropeLen, MYAPP.boat.getX() + MYAPP.boat.width / 3,
-                        MYAPP.boat.getY(), 20, ropeLen);
+        draw();
         collision();
     }
     // Move the MYAPP.hook up and down
@@ -447,7 +461,7 @@ module.exports = {
     getRopeLen: getRopeLen,
     drop: drop,
     collision: collision,
-    draw: draw,
+    update: update,
 };
 
 },{"./utils.js":8}],6:[function(require,module,exports){
@@ -534,7 +548,7 @@ function gameLoop() {
     MYAPP.boat.draw();
     MYAPP.boat.move();
     MYAPP.shoal.drawAll();
-    MYAPP.hook.draw();
+    MYAPP.hook.update();
     // End the game if no good fish remain
     if (MYAPP.shoal.fish.length == 0) {
         MYAPP.stateToVictory();
