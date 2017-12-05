@@ -27,7 +27,7 @@ function Fish(x, y, width, height, sprite) {
     this.move = () => {
         // Swim the fish in the specified directionection
         if (this.caught) {
-            this.y = MYAPP.boat.getY() + MYAPP.hook.getHeight();
+            this.y = MYAPP.boat.getY() + MYAPP.hook.getRopeLen();
             this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
