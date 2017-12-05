@@ -91,7 +91,7 @@ function draw() {
         CTX.drawImage(hookSprite, 0, spriteHeight - ropeLen, 20,
                         ropeLen, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                         MYAPP.boat.getY(), 20, ropeLen);
-        MYAPP.hook.collision();
+        collision();
     }
     // Move the MYAPP.hook up and down
     if (ropeLen < spriteHeight && dropped && !raising) {

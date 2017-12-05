@@ -256,21 +256,6 @@ const game = (function() {
     };
 
     /**
-     * Handles the in game functions and draws everything to the canvas.
-     */
-    function gameLoop() {
-        drawBackground();
-        drawScore();
-        MYAPP.boat.draw();
-        MYAPP.boat.move();
-        MYAPP.shoal.drawAll();
-        MYAPP.hook.draw();
-        // End the game if no good fish remain
-        if (MYAPP.shoal.fish.length == 0) {
-            MYAPP.stateToVictory();
-        };
-    };
-    /**
      * Draws the death screen to the canvas.
      */
     function deathScreen() {
@@ -325,7 +310,6 @@ const game = (function() {
         decrementScore: decrementScore,
         resetScore: resetScore,
         startScreen: startScreen,
-        gameLoop: gameLoop,
         deathScreen: deathScreen,
         victoryScreen: victoryScreen,
         drawBackground: drawBackground,
@@ -432,7 +416,7 @@ function draw() {
         CTX.drawImage(hookSprite, 0, spriteHeight - ropeLen, 20,
                         ropeLen, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                         MYAPP.boat.getY(), 20, ropeLen);
-        MYAPP.hook.collision();
+        collision();
     }
     // Move the MYAPP.hook up and down
     if (ropeLen < spriteHeight && dropped && !raising) {
