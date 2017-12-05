@@ -96,7 +96,37 @@ module.exports = {
     boat: boat,
 };
 
-},{"./utils.js":7}],2:[function(require,module,exports){
+},{"./utils.js":8}],2:[function(require,module,exports){
+'use strict';
+const DEBUG_DIV = 'debug_controls';
+
+/**
+ * Iterates over the properties of an objet and displays them to the debug
+ * area of the page.
+ * @param {String} object The object to be iterated over.
+ */
+function displayDebug(object) {
+    let target = document.getElementById(DEBUG_DIV),
+        debugData = '',
+        property = '';
+
+    for (property in object) {
+        if (object.hasOwnProperty(property)) {
+            debugData += property;
+            debugData += ' ' + object[property] + ' ';
+        }
+    }
+    console.log(debugData);
+    target.innerHTML = debugData;
+};
+
+
+module.exports = {
+    debugMode: true,
+    displayDebug: displayDebug,
+};
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -167,7 +197,7 @@ module.exports = {
     Fish: Fish,
 };
 
-},{"./utils.js":7}],3:[function(require,module,exports){
+},{"./utils.js":8}],4:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -308,7 +338,7 @@ module.exports = {
     game: game,
 };
 
-},{"./utils.js":7}],4:[function(require,module,exports){
+},{"./utils.js":8}],5:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -367,8 +397,8 @@ const hook = (function() {
                 bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w ||
-                     bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.width ||
+                     bottom < f.y || top > f.y + f.height)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
@@ -383,8 +413,8 @@ const hook = (function() {
                 bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w ||
-                     bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.width ||
+                     bottom < f.y || top > f.y + f.height)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
@@ -398,8 +428,10 @@ const hook = (function() {
      * Draws the hook to the canvas.
      */
     function draw() {
+        let data = 'sprite height: ' + spriteHeight + ' dropped: ' + dropped + ' raising ' + raising +
+        ' fishHooked ' + fishHooked + ' height ' + height;
+        console.log('HookDebug: ' + data);
         if (dropped) {
-            console.log('Boat x where it matters: ' + MYAPP.boat.getY());
             CTX.drawImage(hookSprite, 0, spriteHeight - height, 20,
                           height, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                           MYAPP.boat.getY(), 20, height);
@@ -420,7 +452,7 @@ const hook = (function() {
         }
 
         // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-        if (height <= 0 && dropped) {
+        if (height <= 20 && dropped) {
             dropped = false;
             raising = false;
             fishHooked = false;
@@ -442,9 +474,10 @@ module.exports = {
     hook: hook,
 };
 
-},{"./utils.js":7}],5:[function(require,module,exports){
+},{"./utils.js":8}],6:[function(require,module,exports){
 'use strict';
 
+const debugModule = require('./debugControls.js');
 const game = require('./game.js').game;
 const boat = require('./boat.js').boat;
 const hook = require('./hook.js').hook;
@@ -466,6 +499,7 @@ function setup() {
     MYAPP.boat = boat;
     MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
+
 };
 
 /**
@@ -516,15 +550,31 @@ function keyUpEventHandler(e) {
 };
 
 /**
+ * Handles the in game functions and draws everything to the canvas.
+ */
+function gameLoop() {
+    MYAPP.game.drawBackground();
+    MYAPP.game.drawScore();
+    MYAPP.boat.draw();
+    MYAPP.boat.move();
+    MYAPP.shoal.drawAll();
+    MYAPP.hook.draw();
+    // End the game if no good fish remain
+    if (MYAPP.shoal.fish.length == 0) {
+        MYAPP.stateToVictory();
+    };
+};
+
+/**
  * The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
  */
 function mainLoop() {
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
-        setup();
+        // setup();
     } else if (MYAPP.state === 'gameLoop') {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-        MYAPP.game.gameLoop();
+        gameLoop();
     } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();
     } else if (MYAPP.state === 'victory') {
@@ -537,7 +587,7 @@ function mainLoop() {
 setup();
 setInterval(mainLoop, 10);
 
-},{"./boat.js":1,"./game.js":3,"./hook.js":4,"./shoal.js":6,"./utils.js":7}],6:[function(require,module,exports){
+},{"./boat.js":1,"./debugControls.js":2,"./game.js":4,"./hook.js":5,"./shoal.js":7,"./utils.js":8}],7:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -624,7 +674,7 @@ module.exports = {
     Shoal: Shoal,
 };
 
-},{"./fish.js":2,"./utils.js":7}],7:[function(require,module,exports){
+},{"./fish.js":3,"./utils.js":8}],8:[function(require,module,exports){
 'use strict';
 
 const CANVAS = document.getElementById('myCanvas'),
@@ -670,4 +720,4 @@ module.exports = {
     CTX: CTX,
 };
 
-},{}]},{},[5,1]);
+},{}]},{},[6,1]);

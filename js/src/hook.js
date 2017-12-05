@@ -56,8 +56,8 @@ const hook = (function() {
                 bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w ||
-                     bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.width ||
+                     bottom < f.y || top > f.y + f.height)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
@@ -72,8 +72,8 @@ const hook = (function() {
                 bottom = MYAPP.boat.getY() + height;
                 left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
-                if (!(left < f.x || right > f.x + f.w ||
-                     bottom < f.y || top > f.y + f.h)) {
+                if (!(left < f.x || right > f.x + f.width ||
+                     bottom < f.y || top > f.y + f.height)) {
                     console.log('Caught one');
                     f.caught = true;
                     raising = true;
@@ -87,8 +87,10 @@ const hook = (function() {
      * Draws the hook to the canvas.
      */
     function draw() {
+        let data = 'sprite height: ' + spriteHeight + ' dropped: ' + dropped + ' raising ' + raising +
+        ' fishHooked ' + fishHooked + ' height ' + height;
+        console.log('HookDebug: ' + data);
         if (dropped) {
-            console.log('Boat x where it matters: ' + MYAPP.boat.getY());
             CTX.drawImage(hookSprite, 0, spriteHeight - height, 20,
                           height, MYAPP.boat.getX() + MYAPP.boat.width / 3,
                           MYAPP.boat.getY(), 20, height);
@@ -109,7 +111,7 @@ const hook = (function() {
         }
 
         // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-        if (height <= 0 && dropped) {
+        if (height <= 20 && dropped) {
             dropped = false;
             raising = false;
             fishHooked = false;

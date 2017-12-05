@@ -1,5 +1,6 @@
 'use strict';
 
+const debugModule = require('./debugControls.js');
 const game = require('./game.js').game;
 const boat = require('./boat.js').boat;
 const hook = require('./hook.js').hook;
@@ -21,6 +22,7 @@ function setup() {
     MYAPP.boat = boat;
     MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
+
 };
 
 /**
@@ -71,15 +73,31 @@ function keyUpEventHandler(e) {
 };
 
 /**
+ * Handles the in game functions and draws everything to the canvas.
+ */
+function gameLoop() {
+    MYAPP.game.drawBackground();
+    MYAPP.game.drawScore();
+    MYAPP.boat.draw();
+    MYAPP.boat.move();
+    MYAPP.shoal.drawAll();
+    MYAPP.hook.draw();
+    // End the game if no good fish remain
+    if (MYAPP.shoal.fish.length == 0) {
+        MYAPP.stateToVictory();
+    };
+};
+
+/**
  * The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
  */
 function mainLoop() {
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
-        setup();
+        // setup();
     } else if (MYAPP.state === 'gameLoop') {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-        MYAPP.game.gameLoop();
+        gameLoop();
     } else if (MYAPP.state === 'death') {
         MYAPP.game.deathScreen();
     } else if (MYAPP.state === 'victory') {
