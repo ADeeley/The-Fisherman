@@ -96,7 +96,29 @@ module.exports = {
     boat: boat,
 };
 
-},{"./utils.js":8}],2:[function(require,module,exports){
+},{"./utils.js":9}],2:[function(require,module,exports){
+/**
+ * Checks if objects a and b are colliding.
+ * Assumes that both objects have x, y, width and height parameters.
+ * @param {*} a The first object
+ * @param {*} b The second object
+ * @return {Boolean} The result.
+ */
+function collisionDetected(a, b) {
+if (a.x < b.x + b.width && a.x + a.width > b.x &&
+    a.y < b.y + b.height && a.height + a.y > b.y) {
+        // Collision
+        return true;
+    }
+    // No collision
+    return false;
+};
+
+module.exports = {
+    collisionDetected: collisionDetected,
+};
+
+},{}],3:[function(require,module,exports){
 'use strict';
 const DEBUG_DIV = 'debug_controls';
 
@@ -126,7 +148,7 @@ module.exports = {
     displayDebug: displayDebug,
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -197,7 +219,7 @@ module.exports = {
     Fish: Fish,
 };
 
-},{"./utils.js":8}],4:[function(require,module,exports){
+},{"./utils.js":9}],5:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -322,42 +344,47 @@ module.exports = {
     game: game,
 };
 
-},{"./utils.js":8}],5:[function(require,module,exports){
+},{"./utils.js":9}],6:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
-
-let hookSprite = new Image(),
-    spriteHeight = 248,
-    spriteWidth = 20,
-    dropped = false,
-    raising = false,
-    hookSz = 20,
-    fishHooked = false,
-    ropeLen = 20,
-    x = null,
-    y = CANVAS.height / 2,
-    sx = 0,
-    sy = spriteHeight - ropeLen;
+let collisionDetected = MYAPP.collisionDetected,
+    seaLevel = CANVAS.height / 2;
 
 
-hookSprite.src = 'img/hook.png';
+let hook = {
+    hookSprite: new Image(),
+    dropped: false,
+    raising: false,
+    hookSz: 20,
+    fishHooked: false,
+    ropeLen: 20,
+    x: null,
+    y: CANVAS.height / 2,
+    ropeOrigin: 248,
+    height: 20,
+    width: 20,
+    sx: 0,
+};
+hook.sy = hook.ropeOrigin - hook.ropeLen,
+
+hook.hookSprite.src = 'img/hook.png';
 /**
  * Returns the height of the hook.
  * @return {Number} The hook height.
  */
 function getRopeLen() {
-    return ropeLen;
-}
+    return hook.ropeLen;
+};
 
 /**
  * Sets the drop state to true;
  */
 function drop() {
-    dropped = true;
+    hook.dropped = true;
 };
 
 /**
@@ -366,44 +393,33 @@ function drop() {
 function collision() {
     let i = 0,
         f = null,
-        top = null,
-        right = null,
-        bottom = null,
-        left = null,
         shoalLen = MYAPP.shoal.fish.length,
         evilShoalLen = MYAPP.shoal.evilFish.length;
 
     // Make a callback function to return true
-    if (!fishHooked) {
+    if (!hook.fishHooked) {
         for (i; i < shoalLen; i++) {
             f = MYAPP.shoal.fish[i];
-            top = bottom - hookSz;
-            right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
-            bottom = MYAPP.boat.getY() + ropeLen;
-            left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
-            if (!(left < f.x || right > f.x + f.width ||
-                    bottom < f.y || top > f.y + f.height)) {
+            if (collisionDetected(hook, f)) {
+                /*
+            if (hook.x < f.x + f.width && hook.x + hook.width > f.x &&
+                hook.y < f.y + f.height && hook.width + hook.y > f.y) {
+                    */
                 console.log('Caught one');
                 f.caught = true;
-                raising = true;
-                fishHooked = true;
+                hook.raising = true;
+                hook.fishHooked = true;
             }
         }
 
         for (i = 0; i < evilShoalLen; i++) {
             f = MYAPP.shoal.evilFish[i];
-            top = bottom - hookSz;
-            right = MYAPP.boat.getX() + MYAPP.boat.width / 3;
-            bottom = MYAPP.boat.getY() + ropeLen;
-            left = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
-
-            if (!(left < f.x || right > f.x + f.width ||
-                    bottom < f.y || top > f.y + f.height)) {
+            if (collisionDetected(hook, f)) {
                 console.log('Caught one');
                 f.caught = true;
-                raising = true;
-                fishHooked = true;
+                hook.raising = true;
+                hook.fishHooked = true;
             }
         }
     }
@@ -413,44 +429,43 @@ function collision() {
  * Draws the hook to the canvas.
  */
 function _draw() {
-    x = MYAPP.boat.getX() + MYAPP.boat.width / 3;
-    sy = spriteHeight - ropeLen;
-    CTX.drawImage(hookSprite, sx, sy, spriteWidth, ropeLen, x, y,
-    spriteWidth, ropeLen);
+    hook.x = MYAPP.boat.getX() + MYAPP.boat.width / 3;
+    hook.y = seaLevel + hook.ropeLen;
+    hook.sy = hook.ropeOrigin - hook.ropeLen;
+    CTX.drawImage(hook.hookSprite, hook.sx, hook.sy, hook.width, hook.ropeLen, hook.x, seaLevel,
+    hook.width, hook.ropeLen);
 }
 
 /**
  * Manages the hook depending upon the state of the parameters.
  */
 function update() {
-    /* DEBUG ====================
-    let data = 'sprite height: ' + spriteHeight + ' dropped: ' + dropped + ' raising ' + raising +
-    ' fishHooked ' + fishHooked + ' ropeLen ' + ropeLen;
+    let data = 'sprite height: ' + hook.height + ' dropped: ' + hook.dropped + ' raising ' + hook.raising +
+    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y;
     console.log('HookDebug: ' + data);
-    */
-    if (dropped) {
+    if (hook.dropped) {
         _draw();
         collision();
     }
     // Move the MYAPP.hook up and down
-    if (ropeLen < spriteHeight && dropped && !raising) {
-        ropeLen++;
+    if (hook.ropeLen < hook.ropeOrigin && hook.dropped && !hook.raising) {
+        hook.ropeLen++;
         // console.log('increment height');
-    } else if (dropped && raising) {
-        ropeLen--;
+    } else if (hook.dropped && hook.raising) {
+        hook.ropeLen--;
         // console.log('decrement height');
     }
 
     // Raise the MYAPP.hook upon reaching the sea bed
-    if (ropeLen >= CANVAS.height/2 && dropped) {
-        raising = true;
+    if (hook.ropeLen >= CANVAS.height/2 && hook.dropped) {
+        hook.raising = true;
     }
 
     // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-    if (ropeLen <= hookSz && dropped) {
-        dropped = false;
-        raising = false;
-        fishHooked = false;
+    if (hook.ropeLen <= hook.hookSz && hook.dropped) {
+        hook.dropped = false;
+        hook.raising = false;
+        hook.fishHooked = false;
 
         // Remove any caught fish from the MYAPP.shoal
         MYAPP.shoal.removeFish();
@@ -464,7 +479,7 @@ module.exports = {
     update: update,
 };
 
-},{"./utils.js":8}],6:[function(require,module,exports){
+},{"./utils.js":9}],7:[function(require,module,exports){
 'use strict';
 
 const debugModule = require('./debugControls.js');
@@ -577,7 +592,7 @@ function mainLoop() {
 setup();
 setInterval(mainLoop, 10);
 
-},{"./boat.js":1,"./debugControls.js":2,"./game.js":4,"./hook.js":5,"./shoal.js":7,"./utils.js":8}],7:[function(require,module,exports){
+},{"./boat.js":1,"./debugControls.js":3,"./game.js":5,"./hook.js":6,"./shoal.js":8,"./utils.js":9}],8:[function(require,module,exports){
 'use strict';
 
 const utilsModule = require('./utils.js');
@@ -664,28 +679,30 @@ module.exports = {
     Shoal: Shoal,
 };
 
-},{"./fish.js":3,"./utils.js":8}],8:[function(require,module,exports){
+},{"./fish.js":4,"./utils.js":9}],9:[function(require,module,exports){
 'use strict';
 
+const collisionModule = require('./collisionDetection.js');
 const CANVAS = document.getElementById('myCanvas'),
     CTX = CANVAS.getContext('2d'),
     MYAPP = {
-    keyDown: {
-        left: false,
-        right: false,
-    },
-    keys: {
-        SPACE: 32,
-        A_KEY: 65,
-        D_KEY: 68,
-        LEFT_KEY: 37,
-        RIGHT_KEY: 39,
-    },
-    state: 'startScreen',
+        keyDown: {
+            left: false,
+            right: false,
+        },
+        keys: {
+            SPACE: 32,
+            A_KEY: 65,
+            D_KEY: 68,
+            LEFT_KEY: 37,
+            RIGHT_KEY: 39,
+        },
+        state: 'startScreen',
     game: null,
     boat: null,
     hook: null,
     shoal: null,
+    collisionDetected: collisionModule.collisionDetected,
 };
 
 MYAPP.stateToStartScreen = () => {
@@ -710,4 +727,4 @@ module.exports = {
     CTX: CTX,
 };
 
-},{}]},{},[6,1]);
+},{"./collisionDetection.js":2}]},{},[7,1]);

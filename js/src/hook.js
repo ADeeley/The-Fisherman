@@ -4,10 +4,12 @@ const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
+let collisionDetected = MYAPP.collisionDetected,
+    seaLevel = CANVAS.height / 2;
+
 
 let hook = {
     hookSprite: new Image(),
-    collisionDetected: MYAPP.collisionDetected,
     dropped: false,
     raising: false,
     hookSz: 20,
@@ -15,13 +17,14 @@ let hook = {
     ropeLen: 20,
     x: null,
     y: CANVAS.height / 2,
-    height: 248,
+    ropeOrigin: 248,
+    height: 20,
     width: 20,
     sx: 0,
-    sy: height - ropeLen,
 };
+hook.sy = hook.ropeOrigin - hook.ropeLen,
 
-hookSprite.src = 'img/hook.png';
+hook.hookSprite.src = 'img/hook.png';
 /**
  * Returns the height of the hook.
  * @return {Number} The hook height.
@@ -47,13 +50,15 @@ function collision() {
         evilShoalLen = MYAPP.shoal.evilFish.length;
 
     // Make a callback function to return true
-    if (!fishHooked) {
+    if (!hook.fishHooked) {
         for (i; i < shoalLen; i++) {
             f = MYAPP.shoal.fish[i];
-            hook.x = MYAPP.boat.getX() + MYAPP.boat.width / 3 + hookSz;
 
+            if (collisionDetected(hook, f)) {
+                /*
             if (hook.x < f.x + f.width && hook.x + hook.width > f.x &&
                 hook.y < f.y + f.height && hook.width + hook.y > f.y) {
+                    */
                 console.log('Caught one');
                 f.caught = true;
                 hook.raising = true;
@@ -63,8 +68,7 @@ function collision() {
 
         for (i = 0; i < evilShoalLen; i++) {
             f = MYAPP.shoal.evilFish[i];
-            if (hook.x < f.x + f.width && hook.x + hook.width > f.x &&
-                hook.y < f.y + f.height && hook.width + hook.y > f.y) {
+            if (collisionDetected(hook, f)) {
                 console.log('Caught one');
                 f.caught = true;
                 hook.raising = true;
@@ -79,8 +83,9 @@ function collision() {
  */
 function _draw() {
     hook.x = MYAPP.boat.getX() + MYAPP.boat.width / 3;
-    hook.sy = hook.height - hook.ropeLen;
-    CTX.drawImage(hook.hookSprite, hook.sx, hook.sy, hook.width, hook.ropeLen, hook.x, hook.y,
+    hook.y = seaLevel + hook.ropeLen;
+    hook.sy = hook.ropeOrigin - hook.ropeLen;
+    CTX.drawImage(hook.hookSprite, hook.sx, hook.sy, hook.width, hook.ropeLen, hook.x, seaLevel,
     hook.width, hook.ropeLen);
 }
 
@@ -88,17 +93,15 @@ function _draw() {
  * Manages the hook depending upon the state of the parameters.
  */
 function update() {
-    /* DEBUG ====================
-    let data = 'sprite height: ' + height + ' dropped: ' + dropped + ' raising ' + raising +
-    ' fishHooked ' + fishHooked + ' ropeLen ' + ropeLen;
+    let data = 'sprite height: ' + hook.height + ' dropped: ' + hook.dropped + ' raising ' + hook.raising +
+    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y;
     console.log('HookDebug: ' + data);
-    */
     if (hook.dropped) {
         _draw();
         collision();
     }
     // Move the MYAPP.hook up and down
-    if (hook.ropeLen < hook.height && hook.dropped && !hook.raising) {
+    if (hook.ropeLen < hook.ropeOrigin && hook.dropped && !hook.raising) {
         hook.ropeLen++;
         // console.log('increment height');
     } else if (hook.dropped && hook.raising) {
