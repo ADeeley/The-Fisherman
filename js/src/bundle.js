@@ -412,7 +412,7 @@ function collision() {
 /**
  * Draws the hook to the canvas.
  */
-function draw() {
+function _draw() {
     x = MYAPP.boat.getX() + MYAPP.boat.width / 3;
     sy = spriteHeight - ropeLen;
     CTX.drawImage(hookSprite, sx, sy, spriteWidth, ropeLen, x, y,
@@ -429,7 +429,7 @@ function update() {
     console.log('HookDebug: ' + data);
     */
     if (dropped) {
-        draw();
+        _draw();
         collision();
     }
     // Move the MYAPP.hook up and down
@@ -447,7 +447,7 @@ function update() {
     }
 
     // Reset the MYAPP.hook upon reaching the MYAPP.boat again
-    if (ropeLen <= 20 && dropped) {
+    if (ropeLen <= hookSz && dropped) {
         dropped = false;
         raising = false;
         fishHooked = false;
