@@ -11,7 +11,9 @@ gradient.addColorStop(1, 'black');
 
 let largeFont = '40pt Ariel',
     mediumFont = '20pt Ariel',
-    score = 0;
+    score = 0,
+    midLeft = CANVAS.height/2 - 5;
+
 
 /**
  * Getter for the score.
@@ -88,7 +90,7 @@ function drawBackground() {
 function drawTitle() {
     CTX.font = largeFont;
     CTX.fillStyle = 'white';
-    CTX.fillText('The', 20, CANVAS.height/2 - 5);
+    CTX.fillText('The', 20, midLeft);
     CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
 };
 

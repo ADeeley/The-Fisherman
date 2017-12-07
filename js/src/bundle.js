@@ -202,7 +202,9 @@ gradient.addColorStop(1, 'black');
 
 let largeFont = '40pt Ariel',
     mediumFont = '20pt Ariel',
-    score = 0;
+    score = 0,
+    midLeft = CANVAS.height/2 - 5;
+
 
 /**
  * Getter for the score.
@@ -279,7 +281,7 @@ function drawBackground() {
 function drawTitle() {
     CTX.font = largeFont;
     CTX.fillStyle = 'white';
-    CTX.fillText('The', 20, CANVAS.height/2 - 5);
+    CTX.fillText('The', 20, midLeft);
     CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
 };
 
@@ -570,22 +572,26 @@ evilFishSprite.src = 'img/evilfish.png';
 goodFishSprite.src = 'img/goldfish.png';
 
 /**
+ * Adds fish to the fish array.
+ * @param {Number} n The number of fish to populate to the array.
+ * @param {Image} sprite The image to display to the canvas
+ * @param {String} species The string representing the fishe's type
+ */
+function populateArray(n, sprite, species) {
+    for (i = 0; i < n; i++) {
+        x = Math.floor(Math.random() * xDelta),
+        y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
+        fish.push(new Fish(x, y, width, height, sprite, species));
+    }
+}
+/**
  * Initialises the array with the specified number of fish.
  * Resets the array if called again.
  */
 function init() {
     fish = [];
-    for (i = 0; i < numGoodFish; i++) {
-        x = Math.floor(Math.random() * xDelta),
-        y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-        fish.push(new Fish(x, y, width, height, goodFishSprite, 'good'));
-    }
-
-    for (i = 0; i < numEvilFish; i++) {
-        x = Math.floor(Math.random() * xDelta),
-        y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-        fish.push(new Fish(x, y, width, height, evilFishSprite, 'evil'));
-    }
+    populateArray(3, goodFishSprite, 'good');
+    populateArray(1, evilFishSprite, 'evil');
 };
 
 /**
