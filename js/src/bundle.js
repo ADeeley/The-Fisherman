@@ -132,7 +132,7 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} height The height of the fish
  * @param {Image} sprite A sprite image object
  */
-function Fish(x, y, width, height, sprite) {
+function Fish(x, y, width, height, sprite, species) {
     let direction = 1,
         right = 1,
         left = -1,
@@ -142,6 +142,7 @@ function Fish(x, y, width, height, sprite) {
     this.width = width;
     this.height = height;
     this.caught = false;
+    this.species = species,
 
     this.move = () => {
         // Swim the fish in the specified directionection
@@ -510,7 +511,7 @@ function gameLoop() {
     MYAPP.shoal.drawAll();
     MYAPP.hook.update();
     // End the game if no good fish remain
-    if (MYAPP.shoal.fish.length == 0) {
+    if (MYAPP.shoal.allGoodFishCaught()) {
         MYAPP.stateToVictory();
     };
 };
@@ -571,29 +572,26 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, width, height, goodFishSprite));
+            fishArr.push(new Fish(x, y, width, height, goodFishSprite, 'good'));
         }
 
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, width, height, evilFishSprite));
+            fishArr.push(new Fish(x, y, width, height, evilFishSprite, 'evil'));
         }
 
         return fishArr;
     })();
 
     this.drawAll = () => {
-        i = 0;
-        for (i; i < this.fish.length; i++) {
+        for (i = 0; i < this.fish.length; i++) {
             this.fish[i].draw();
         }
     };
 
     this.removeFish = () => {
-        i = 0;
-
-        for (i; i < this.fish.length; i++) {
+        for (i = 0; i < this.fish.length; i++) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
@@ -602,7 +600,16 @@ function Shoal(numGoodFish, numEvilFish) {
             }
         }
     };
+    this.allGoodFishCaught = () => {
+        for (i = 0; i < this.fish.length; i++) {
+            if (this.fish[i].species === 'good') {
+                return false;
+            }
+        }
+        return true;
+    };
 }
+
 
 module.exports = {
     Shoal: Shoal,

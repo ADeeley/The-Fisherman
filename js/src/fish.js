@@ -13,7 +13,7 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} height The height of the fish
  * @param {Image} sprite A sprite image object
  */
-function Fish(x, y, width, height, sprite) {
+function Fish(x, y, width, height, sprite, species) {
     let direction = 1,
         right = 1,
         left = -1,
@@ -23,6 +23,7 @@ function Fish(x, y, width, height, sprite) {
     this.width = width;
     this.height = height;
     this.caught = false;
+    this.species = species,
 
     this.move = () => {
         // Swim the fish in the specified directionection

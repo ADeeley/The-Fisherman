@@ -82,7 +82,7 @@ function gameLoop() {
     MYAPP.shoal.drawAll();
     MYAPP.hook.update();
     // End the game if no good fish remain
-    if (MYAPP.shoal.fish.length == 0) {
+    if (MYAPP.shoal.allGoodFishCaught()) {
         MYAPP.stateToVictory();
     };
 };

@@ -31,29 +31,26 @@ function Shoal(numGoodFish, numEvilFish) {
         for (i; i < numGoodFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, width, height, goodFishSprite));
+            fishArr.push(new Fish(x, y, width, height, goodFishSprite, 'good'));
         }
 
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            fishArr.push(new Fish(x, y, width, height, evilFishSprite));
+            fishArr.push(new Fish(x, y, width, height, evilFishSprite, 'evil'));
         }
 
         return fishArr;
     })();
 
     this.drawAll = () => {
-        i = 0;
-        for (i; i < this.fish.length; i++) {
+        for (i = 0; i < this.fish.length; i++) {
             this.fish[i].draw();
         }
     };
 
     this.removeFish = () => {
-        i = 0;
-
-        for (i; i < this.fish.length; i++) {
+        for (i = 0; i < this.fish.length; i++) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
@@ -62,7 +59,16 @@ function Shoal(numGoodFish, numEvilFish) {
             }
         }
     };
+    this.allGoodFishCaught = () => {
+        for (i = 0; i < this.fish.length; i++) {
+            if (this.fish[i].species === 'good') {
+                return false;
+            }
+        }
+        return true;
+    };
 }
+
 
 module.exports = {
     Shoal: Shoal,
