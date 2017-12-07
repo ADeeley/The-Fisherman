@@ -46,12 +46,12 @@ function drop() {
 function collision() {
     let i = 0,
         f = null,
-        shoalLen = MYAPP.shoal.fish.length;
+        shoalLen = MYAPP.shoal.getShoalLen();
 
     // Make a callback function to return true
     if (!hook.fishHooked) {
         for (i; i < shoalLen; i++) {
-            f = MYAPP.shoal.fish[i];
+            f = MYAPP.shoal.getFish(i);
 
             if (collisionDetected(hook, f)) {
                 console.log('Caught one');

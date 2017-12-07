@@ -4,7 +4,7 @@ const debugModule = require('./debugControls.js');
 const game = require('./game.js');
 const boat = require('./boat.js');
 const hook = require('./hook.js');
-const Shoal = require('./shoal.js').Shoal;
+const shoal = require('./shoal.js');
 const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
@@ -18,10 +18,10 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  */
 function setup() {
     MYAPP.game = game;
-    MYAPP.game.resetScore();
     MYAPP.boat = boat;
     MYAPP.hook = hook;
-    MYAPP.shoal = new Shoal(3, 4);
+    MYAPP.shoal = shoal;
+    MYAPP.shoal.init();
 };
 
 /**
@@ -34,6 +34,8 @@ function keyDownEventHandler(e) {
     case MYAPP.keys.SPACE:
         switch (MYAPP.state) {
         case 'startScreen':
+            MYAPP.game.resetScore();
+            MYAPP.shoal.init();
             MYAPP.stateToStartGame();
             break;
         case 'gameLoop':
@@ -93,7 +95,6 @@ function gameLoop() {
 function mainLoop() {
     if (MYAPP.state === 'startScreen') {
         MYAPP.game.startScreen();
-        // setup();
     } else if (MYAPP.state === 'gameLoop') {
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         gameLoop();
