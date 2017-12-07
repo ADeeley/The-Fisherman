@@ -1,99 +1,67 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
-const utilsModule = require('./utils.js');
-const CTX = utilsModule.CTX;
-const CANVAS = utilsModule.CANVAS;
-const MYAPP = utilsModule.MYAPP;
+const utilsModule = require('./utils.js'),
+CTX = utilsModule.CTX,
+CANVAS = utilsModule.CANVAS,
+MYAPP = utilsModule.MYAPP;
+
+let x = CANVAS.width/2,
+    y = CANVAS.height/2,
+    speed = 3,
+    width = 50,
+    height = 30,
+    // 0 represents left, 1 represents right
+    direction = 0,
+// Boat sprite setup
+boatSprite = new Image();
+boatSprite.src = 'img/boat.png';
 
 /**
- *  Constructor function for the boat object.
- * @return {Boat} A boat object with only public properties and methods
- * visible.
+ * Provides X as a reference, instead of a number literal.
+ * @return {Number} The x coordinate of boat.
  */
-const boat = (function() {
-    let x = CANVAS.width/2,
-        y = CANVAS.height/2,
-        speed = 3,
-        width = 50,
-        height = 30,
-        left = -1,
-        right = 1,
-        // -1 represents left, 1 represents right
-        direction = left,
-        // Boat sprite setup
-        boatSprite = new Image();
-        boatSprite.src = 'img/boat.png';
+function getX() {
+    return x;
+}
+/**
+ * Draws the boat to the CANVAS.
+ */
+function draw() {
+    if (direction === 0) {
+        // Draw left sprite
+        CTX.drawImage(boatSprite, 0, 0, width, height, x, y - height, width, height);
+    } else if (direction === 1) {
+        // Draw right sprite
+        CTX.drawImage(boatSprite, 50, 0, width, height, x, y - height, width, height);
+    }
+}
 
-    /**
-     * Getter for the speed of the boat,
-     * @return {Number} The speed of the boat.
-     */
-    function getSpeed() {
-        return speed;
-    }
-    /**
-     * Getter for the x coordinate of the boat,
-     * @return {Number} The x coordinate of the boat.
-     */
-    function getX() {
-        return x;
-    }
-    /**
-     * Getter for the y coordinate of the boat,
-     * @return {Number} The y coordinate of the boat.
-     */
-    function getY() {
-        return y;
-    }
-    /**
-     * Draws the boat to the CANVAS.
-     */
-    function draw() {
-        if (direction === left) {
-            // Draw left sprite
-            CTX.drawImage(boatSprite, 0, 0, width, height,
-                    x, y - height, width, height);
-        } else if (direction === right) {
-            // Draw right sprite
-            CTX.drawImage(boatSprite, 50, 0, width, height,
-                    x, y - height, width, height);
+/**
+ * Moves the boat around the screen according to the direction and
+ * buttons pressed.
+ */
+function move() {
+    if (MYAPP.keyDown.left && x >= 0) {
+    x--;
+    // console.log('left');
+        if (direction !== 0) {
+            direction = 0;
         }
-    };
-
-    /**
-     * Moves the boat in the direction dictated by the arrow keys.
-     */
-    function move() {
-        if (MYAPP.keyDown.left && x >= 0) {
-        x--;
-        // console.log('left');
-            if (direction !== left) {
-                direction = left;
-            }
-        } else if (MYAPP.keyDown.right && x <= CANVAS.width - width) {
-        x++;
-            if (direction !== right) {
-                direction = right;
-            }
+    } else if (MYAPP.keyDown.right && x <= CANVAS.width - width) {
+    x++;
+        if (direction !== 1) {
+            direction = 1;
         }
-    };
-
-    return {
-        getX: getX,
-        getY: getY,
-        speed: speed,
-        width: width,
-        height: height,
-        direction: direction,
-        getSpeed: getSpeed,
-        draw: draw,
-        move: move,
-        boatSprite: boatSprite,
-    };
-})();
+    }
+}
 
 module.exports = {
-    boat: boat,
+    getX: getX,
+    y: y,
+    width: width,
+    height: height,
+    draw: draw,
+    move: move,
 };
 
 },{"./utils.js":9}],2:[function(require,module,exports){
@@ -178,7 +146,7 @@ function Fish(x, y, width, height, sprite) {
     this.move = () => {
         // Swim the fish in the specified directionection
         if (this.caught) {
-            this.y = MYAPP.boat.getY() + MYAPP.hook.getRopeLen();
+            this.y = MYAPP.boat.y + MYAPP.hook.getRopeLen();
             this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
@@ -204,7 +172,7 @@ function Fish(x, y, width, height, sprite) {
     };
 
     this.draw = () => {
-        if (direction === 1) {
+        if (direction === right) {
             CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
                           this.width, this.height);
         } else {
@@ -227,121 +195,113 @@ const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 const gradient = CTX.createLinearGradient(0, CANVAS.height/2, 0, 500);
+
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 
+let largeFont = '40pt Ariel',
+    mediumFont = '20pt Ariel',
+    score = 0;
+
 /**
- * Game constructor function
+ * Getter for the score.
+ * @return {Number} the current score.
  */
-const game = (function() {
-    let largeFont = '40pt Ariel',
-        mediumFont = '20pt Ariel',
-        score = 0;
+function getScore() {
+    return score;
+};
 
-    /**
-     * Getter for the score.
-     * @return {Number} the current score.
-     */
-    function getScore() {
-        return score;
-    };
+/**
+ * Increments the score.
+ */
+function incrementScore() {
+    score++;
+};
 
-    /**
-     * Increments the score.
-     */
-    function incrementScore() {
-        score++;
-    };
+/**
+ * Decrements the score.
+ */
+function decrementScore() {
+    score--;
+};
 
-    /**
-     * Decrements the score.
-     */
-    function decrementScore() {
-        score--;
-    };
+/**
+ * Resets the score to 0.
+ */
+function resetScore() {
+    score = 0;
+};
 
-    /**
-     * Resets the score to 0.
-     */
-    function resetScore() {
-        score = 0;
-    };
+/**
+ * Draws the startScreen to the canvas.
+ */
+function startScreen() {
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    drawBackground();
+    drawTitle();
+    MYAPP.boat.draw();
+};
 
-    /**
-     * Draws the startScreen to the canvas.
-     */
-    function startScreen() {
-        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
-        drawBackground();
-        drawTitle();
-        MYAPP.boat.draw();
-    };
+/**
+ * Draws the death screen to the canvas.
+ */
+function deathScreen() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
+    drawBackground();
+};
 
-    /**
-     * Draws the death screen to the canvas.
-     */
-    function deathScreen() {
-        CTX.font = largeFont;
-        CTX.fillStyle = 'white';
-        CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
-        drawBackground();
-    };
+/**
+ * Draws the victory screen to the canvas.
+ */
+function victoryScreen() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
+};
 
-    /**
-     * Draws the victory screen to the canvas.
-     */
-    function victoryScreen() {
-        CTX.font = largeFont;
-        CTX.fillStyle = 'white';
-        CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
-    };
+/**
+ * Draws the standard background to the canvas.
+ */
+function drawBackground() {
+    CTX.beginPath();
+    CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
+    CTX.fillStyle = gradient;
+    CTX.fill();
+    CTX.closePath();
+};
 
-    /**
-     * Draws the standard background to the canvas.
-     */
-    function drawBackground() {
-        CTX.beginPath();
-        CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
-        CTX.fillStyle = gradient;
-        CTX.fill();
-        CTX.closePath();
-    };
+/**
+ * Draws the title to the canvas.
+ */
+function drawTitle() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('The', 20, CANVAS.height/2 - 5);
+    CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
+};
 
-    /**
-     * Draws the title to the canvas.
-     */
-    function drawTitle() {
-        CTX.font = largeFont;
-        CTX.fillStyle = 'white';
-        CTX.fillText('The', 20, CANVAS.height/2 - 5);
-        CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
-    };
-
-    /**
-     * Draws the score to the canvas.
-     */
-    function drawScore() {
-        CTX.font = mediumFont;
-        CTX.fillStyle = 'white';
-        CTX.fillText(score, 20, 40);
-    };
-
-    return {
-        getScore: getScore,
-        incrementScore: incrementScore,
-        decrementScore: decrementScore,
-        resetScore: resetScore,
-        startScreen: startScreen,
-        deathScreen: deathScreen,
-        victoryScreen: victoryScreen,
-        drawBackground: drawBackground,
-        drawTitle: drawTitle,
-        drawScore: drawScore,
-    };
-})();
+/**
+ * Draws the score to the canvas.
+ */
+function drawScore() {
+    CTX.font = mediumFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText(score, 20, 40);
+};
 
 module.exports = {
-    game: game,
+    getScore: getScore,
+    incrementScore: incrementScore,
+    decrementScore: decrementScore,
+    resetScore: resetScore,
+    startScreen: startScreen,
+    deathScreen: deathScreen,
+    victoryScreen: victoryScreen,
+    drawBackground: drawBackground,
+    drawTitle: drawTitle,
+    drawScore: drawScore,
 };
 
 },{"./utils.js":9}],6:[function(require,module,exports){
@@ -363,7 +323,7 @@ let hook = {
     fishHooked: false,
     ropeLen: 20,
     x: null,
-    y: CANVAS.height / 2,
+    y: seaLevel,
     ropeOrigin: 248,
     height: 20,
     width: 20,
@@ -393,28 +353,13 @@ function drop() {
 function collision() {
     let i = 0,
         f = null,
-        shoalLen = MYAPP.shoal.fish.length,
-        evilShoalLen = MYAPP.shoal.evilFish.length;
+        shoalLen = MYAPP.shoal.fish.length;
 
     // Make a callback function to return true
     if (!hook.fishHooked) {
         for (i; i < shoalLen; i++) {
             f = MYAPP.shoal.fish[i];
 
-            if (collisionDetected(hook, f)) {
-                /*
-            if (hook.x < f.x + f.width && hook.x + hook.width > f.x &&
-                hook.y < f.y + f.height && hook.width + hook.y > f.y) {
-                    */
-                console.log('Caught one');
-                f.caught = true;
-                hook.raising = true;
-                hook.fishHooked = true;
-            }
-        }
-
-        for (i = 0; i < evilShoalLen; i++) {
-            f = MYAPP.shoal.evilFish[i];
             if (collisionDetected(hook, f)) {
                 console.log('Caught one');
                 f.caught = true;
@@ -441,7 +386,8 @@ function _draw() {
  */
 function update() {
     let data = 'sprite height: ' + hook.height + ' dropped: ' + hook.dropped + ' raising ' + hook.raising +
-    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y;
+    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y + ' sy ' + hook.sy + 
+    ' sx ' + hook.sx + ' hookSprite' + hook.hookSprite + ' hook.x ' + hook.x;
     console.log('HookDebug: ' + data);
     if (hook.dropped) {
         _draw();
@@ -483,8 +429,8 @@ module.exports = {
 'use strict';
 
 const debugModule = require('./debugControls.js');
-const game = require('./game.js').game;
-const boat = require('./boat.js').boat;
+const game = require('./game.js');
+const boat = require('./boat.js');
 const hook = require('./hook.js');
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
@@ -504,7 +450,6 @@ function setup() {
     MYAPP.boat = boat;
     MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
-
 };
 
 /**
@@ -629,29 +574,19 @@ function Shoal(numGoodFish, numEvilFish) {
             fishArr.push(new Fish(x, y, width, height, goodFishSprite));
         }
 
-        return fishArr;
-    })();
-
-    this.evilFish = (() => {
-        let evilFishArr = [];
-
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            evilFishArr.push(new Fish(x, y, width, height, evilFishSprite));
+            fishArr.push(new Fish(x, y, width, height, evilFishSprite));
         }
 
-        return evilFishArr;
+        return fishArr;
     })();
-
 
     this.drawAll = () => {
         i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            this.evilFish[i].draw();
         }
     };
 
@@ -662,14 +597,8 @@ function Shoal(numGoodFish, numEvilFish) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
+                // Add check for evil fish to decrement score.
                 MYAPP.game.incrementScore();
-            }
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            if (this.evilFish[i].caught) {
-                this.evilFish.splice(i, 1);
-                console.log('Sliced fish array');
-                MYAPP.game.decrementScore();
             }
         }
     };

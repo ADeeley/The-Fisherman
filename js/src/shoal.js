@@ -34,29 +34,19 @@ function Shoal(numGoodFish, numEvilFish) {
             fishArr.push(new Fish(x, y, width, height, goodFishSprite));
         }
 
-        return fishArr;
-    })();
-
-    this.evilFish = (() => {
-        let evilFishArr = [];
-
         for (i; i < numEvilFish; i++) {
             x = Math.floor(Math.random() * xDelta),
             y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
-            evilFishArr.push(new Fish(x, y, width, height, evilFishSprite));
+            fishArr.push(new Fish(x, y, width, height, evilFishSprite));
         }
 
-        return evilFishArr;
+        return fishArr;
     })();
-
 
     this.drawAll = () => {
         i = 0;
         for (i; i < this.fish.length; i++) {
             this.fish[i].draw();
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            this.evilFish[i].draw();
         }
     };
 
@@ -67,14 +57,8 @@ function Shoal(numGoodFish, numEvilFish) {
             if (this.fish[i].caught) {
                 this.fish.splice(i, 1);
                 console.log('Sliced fish array');
+                // Add check for evil fish to decrement score.
                 MYAPP.game.incrementScore();
-            }
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            if (this.evilFish[i].caught) {
-                this.evilFish.splice(i, 1);
-                console.log('Sliced fish array');
-                MYAPP.game.decrementScore();
             }
         }
     };

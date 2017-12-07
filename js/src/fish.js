@@ -27,7 +27,7 @@ function Fish(x, y, width, height, sprite) {
     this.move = () => {
         // Swim the fish in the specified directionection
         if (this.caught) {
-            this.y = MYAPP.boat.getY() + MYAPP.hook.getRopeLen();
+            this.y = MYAPP.boat.y + MYAPP.hook.getRopeLen();
             this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
             console.log('Raising fishie!');
         }
@@ -53,7 +53,7 @@ function Fish(x, y, width, height, sprite) {
     };
 
     this.draw = () => {
-        if (direction === 1) {
+        if (direction === right) {
             CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
                           this.width, this.height);
         } else {

@@ -16,7 +16,7 @@ let hook = {
     fishHooked: false,
     ropeLen: 20,
     x: null,
-    y: CANVAS.height / 2,
+    y: seaLevel,
     ropeOrigin: 248,
     height: 20,
     width: 20,
@@ -46,28 +46,13 @@ function drop() {
 function collision() {
     let i = 0,
         f = null,
-        shoalLen = MYAPP.shoal.fish.length,
-        evilShoalLen = MYAPP.shoal.evilFish.length;
+        shoalLen = MYAPP.shoal.fish.length;
 
     // Make a callback function to return true
     if (!hook.fishHooked) {
         for (i; i < shoalLen; i++) {
             f = MYAPP.shoal.fish[i];
 
-            if (collisionDetected(hook, f)) {
-                /*
-            if (hook.x < f.x + f.width && hook.x + hook.width > f.x &&
-                hook.y < f.y + f.height && hook.width + hook.y > f.y) {
-                    */
-                console.log('Caught one');
-                f.caught = true;
-                hook.raising = true;
-                hook.fishHooked = true;
-            }
-        }
-
-        for (i = 0; i < evilShoalLen; i++) {
-            f = MYAPP.shoal.evilFish[i];
             if (collisionDetected(hook, f)) {
                 console.log('Caught one');
                 f.caught = true;
@@ -94,7 +79,8 @@ function _draw() {
  */
 function update() {
     let data = 'sprite height: ' + hook.height + ' dropped: ' + hook.dropped + ' raising ' + hook.raising +
-    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y;
+    ' fishHooked ' + hook.fishHooked + ' ropeLen ' + hook.ropeLen + ' Hook.y ' + hook.y + ' sy ' + hook.sy + 
+    ' sx ' + hook.sx + ' hookSprite' + hook.hookSprite + ' hook.x ' + hook.x;
     console.log('HookDebug: ' + data);
     if (hook.dropped) {
         _draw();

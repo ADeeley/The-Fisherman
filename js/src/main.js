@@ -1,8 +1,8 @@
 'use strict';
 
 const debugModule = require('./debugControls.js');
-const game = require('./game.js').game;
-const boat = require('./boat.js').boat;
+const game = require('./game.js');
+const boat = require('./boat.js');
 const hook = require('./hook.js');
 const Shoal = require('./shoal.js').Shoal;
 const utilsModule = require('./utils.js');
@@ -22,7 +22,6 @@ function setup() {
     MYAPP.boat = boat;
     MYAPP.hook = hook;
     MYAPP.shoal = new Shoal(3, 4);
-
 };
 
 /**
