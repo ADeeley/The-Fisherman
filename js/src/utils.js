@@ -39,6 +39,13 @@ MYAPP.stateToVictory = () => {
     MYAPP.state = 'victory';
 };
 
+MYAPP.withinCanvasBounds = (obj) => {
+    if (obj.x >= 0 && obj.x <= CANVAS.width - obj.width) {
+        return true;
+    };
+    return false;
+}
+
 module.exports = {
     MYAPP: MYAPP,
     CANVAS: CANVAS,

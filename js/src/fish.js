@@ -5,6 +5,7 @@ const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
+
 /**
  * Fish constructor function
  * @param {Number} x The X coordinate
@@ -25,14 +26,22 @@ function Fish(x, y, width, height, sprite, species) {
     this.caught = false;
     this.species = species,
 
+    this._hookedY = function() {
+        return MYAPP.boat.y + MYAPP.hook.getRopeLen();
+    };
+
+    this._hookedX = function() {
+        return MYAPP.boat.getX() + MYAPP.boat.width/3;
+    };
+
     this.move = () => {
         // Swim the fish in the specified directionection
         if (this.caught) {
-            this.y = MYAPP.boat.y + MYAPP.hook.getRopeLen();
-            this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
+            this.y = this._hookedY();
+            this.x = this._hookedX();
             console.log('Raising fishie!');
         }
-        if (this.x >= 0 && this.x <= CANVAS.width - this.width) {
+        if (MYAPP.withinCanvasBounds(this)) {
             if (direction === right) {
                 this.x++;
             } else if (direction === left) {
