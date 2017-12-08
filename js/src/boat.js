@@ -60,20 +60,6 @@ function move() {
             boat.x++;
         }
     }
-    /*
-    if (MYAPP.keyDown.left && boat.x >= 0) {
-    boat.x--;
-    // console.log('left');
-        if (boat.direction !== 0) {
-            boat.direction = 0;
-        }
-    } else if (MYAPP.keyDown.right && boat.x <= CANVAS.width - boat.width) {
-    boat.x++;
-        if (boat.direction !== 1) {
-            boat.direction = 1;
-        }
-    }
-    */
 }
 
 module.exports = {

@@ -61,20 +61,6 @@ function move() {
             boat.x++;
         }
     }
-    /*
-    if (MYAPP.keyDown.left && boat.x >= 0) {
-    boat.x--;
-    // console.log('left');
-        if (boat.direction !== 0) {
-            boat.direction = 0;
-        }
-    } else if (MYAPP.keyDown.right && boat.x <= CANVAS.width - boat.width) {
-    boat.x++;
-        if (boat.direction !== 1) {
-            boat.direction = 1;
-        }
-    }
-    */
 }
 
 module.exports = {
@@ -158,8 +144,7 @@ const MYAPP = utilsModule.MYAPP;
 function Fish(x, y, width, height, sprite, species) {
     let direction = 1,
         right = 1,
-        left = -1,
-        speed = 2;
+        left = -1;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -175,31 +160,44 @@ function Fish(x, y, width, height, sprite, species) {
         return MYAPP.boat.getX() + MYAPP.boat.width/3;
     };
 
+    this._swim = function() {
+        if (direction === right) {
+            this.x++;
+        } else if (direction === left) {
+            this.x--;
+        }
+    };
+
+    this._randomDirectionChange = function() {
+        if (this.x < 5 || this.x > CANVAS.width - 6) {
+            return;
+        }
+        if (Math.random() > 0.99) {
+            direction *= left;
+        }
+    };
+
+    this._aboutTurn = function() {
+        if (direction === right) {
+            this.x--;
+            direction = left;
+        } else if (direction === left) {
+            this.x++;
+            direction = right;
+        }
+    };
+
     this.move = () => {
         // Swim the fish in the specified directionection
         if (this.caught) {
             this.y = this._hookedY();
             this.x = this._hookedX();
             console.log('Raising fishie!');
-        }
-        if (MYAPP.withinCanvasBounds(this)) {
-            if (direction === right) {
-                this.x++;
-            } else if (direction === left) {
-                this.x--;
-            }
-
-            // Randomly change directionection
-            if (Math.random() > 0.99) {
-                direction *= left;
-            }
+        } else if (MYAPP.withinCanvasBounds(this)) {
+            this._swim();
+            this._randomDirectionChange();
         } else {
-            direction *= left;
-            if (direction === right) {
-                this.x += speed;
-            } else if (direction === left) {
-                this.x -= speed;
-            }
+            this._aboutTurn();
         }
     };
 
@@ -586,8 +584,8 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-let numGoodFish = 3,
-    numEvilFish = 1,
+let numGoodFish = 50,
+    numEvilFish = 20,
     goodFishSprite = new Image(),
     evilFishSprite = new Image(),
     fish = [],
@@ -621,8 +619,8 @@ function populateArray(n, sprite, species) {
  */
 function init() {
     fish = [];
-    populateArray(3, goodFishSprite, 'good');
-    populateArray(1, evilFishSprite, 'evil');
+    populateArray(numGoodFish, goodFishSprite, 'good');
+    populateArray(numEvilFish, evilFishSprite, 'evil');
 };
 
 /**

@@ -11,8 +11,8 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-let numGoodFish = 3,
-    numEvilFish = 1,
+let numGoodFish = 50,
+    numEvilFish = 20,
     goodFishSprite = new Image(),
     evilFishSprite = new Image(),
     fish = [],
@@ -46,8 +46,8 @@ function populateArray(n, sprite, species) {
  */
 function init() {
     fish = [];
-    populateArray(3, goodFishSprite, 'good');
-    populateArray(1, evilFishSprite, 'evil');
+    populateArray(numGoodFish, goodFishSprite, 'good');
+    populateArray(numEvilFish, evilFishSprite, 'evil');
 };
 
 /**
