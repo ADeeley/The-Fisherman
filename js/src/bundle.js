@@ -42,24 +42,30 @@ function draw() {
         CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, boat.x, boat.y - boat.height, boat.width, boat.height);
     }
 }
+/**
+ * Sails the ship in the direction it is pointed
+ */
+function _sailInGivenDirection() {
+    if (MYAPP.withinCanvasBounds(boat)) {
+        boat.x += boat.direction;
+    }
+}
 
 /**
  * Moves the boat around the screen according to the direction and
  * buttons pressed.
  */
 function move() {
-    if (MYAPP.withinCanvasBounds(boat)) {
-        if (MYAPP.keyDown.left) {
-            if (boat.direction !== left) {
-                boat.direction = left;
-            }
-            boat.x--;
-        } else if (MYAPP.keyDown.right) {
-            if (boat.direction !== right) {
-                boat.direction = right;
-            }
-            boat.x++;
+    if (MYAPP.keyDown.left) {
+        if (boat.direction !== left) {
+            boat.direction = left;
         }
+        _sailInGivenDirection();
+    } else if (MYAPP.keyDown.right) {
+        if (boat.direction !== right) {
+            boat.direction = right;
+        }
+        _sailInGivenDirection();
     }
 }
 
@@ -727,7 +733,7 @@ MYAPP.stateToVictory = () => {
 };
 
 MYAPP.withinCanvasBounds = (obj) => {
-    if (obj.x >= 0 && obj.x <= CANVAS.width - obj.width) {
+    if (obj.x > 0 && obj.x < CANVAS.width - obj.width) {
         return true;
     };
     return false;
