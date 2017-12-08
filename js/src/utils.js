@@ -6,6 +6,9 @@ const CANVAS = document.getElementById('myCanvas'),
     MYAPP = {
         left: -1,
         right: 1,
+        seaLevel: (() => {
+            return CANVAS.height / 2;
+        })(),
         keyDown: {
             left: false,
             right: false,

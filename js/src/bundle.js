@@ -567,6 +567,7 @@ const utilsModule = require('./utils.js');
 const Fish = require('./fish.js').Fish;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
+const seaLevel = MYAPP.seaLevel;
 
 /**
  * Stores the evil fish array and good fish array and associated
@@ -574,8 +575,8 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-let numGoodFish = 1,
-    numEvilFish = 0,
+let numGoodFish = 30,
+    numEvilFish = 15,
     goodFishSprite = new Image(),
     evilFishSprite = new Image(),
     fish = [],
@@ -584,11 +585,20 @@ let numGoodFish = 1,
     y = null,
     width = 30,
     height = 20,
-    xDelta = CANVAS.width-30,
-    yDelta = (CANVAS.height/2-20);
+    xDelta = CANVAS.width - width,
+    yDelta = (CANVAS.height / 2 - height);
 
 evilFishSprite.src = 'img/evilfish.png';
 goodFishSprite.src = 'img/goldfish.png';
+
+/**
+ * Generates a random integer value between 0 and max.
+ * @param {Number} max The maximum coordinate value
+ * @return {Number} An integer coordinate.
+ */
+function generateRandomCoordinate(max) {
+    return Math.floor(Math.random() * max);
+};
 
 /**
  * Adds fish to the fish array.
@@ -598,8 +608,8 @@ goodFishSprite.src = 'img/goldfish.png';
  */
 function populateArray(n, sprite, species) {
     for (i = 0; i < n; i++) {
-        x = Math.floor(Math.random() * xDelta),
-        y = Math.floor(Math.random() * yDelta) + CANVAS.height/2;
+        x = generateRandomCoordinate(xDelta);
+        y = generateRandomCoordinate(yDelta) + seaLevel;
         fish.push(new Fish(x, y, width, height, sprite, species));
     }
 }
@@ -683,6 +693,9 @@ const CANVAS = document.getElementById('myCanvas'),
     MYAPP = {
         left: -1,
         right: 1,
+        seaLevel: (() => {
+            return CANVAS.height / 2;
+        })(),
         keyDown: {
             left: false,
             right: false,
