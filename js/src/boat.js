@@ -38,7 +38,8 @@ function draw() {
             boat.x, boat.y - boat.height, boat.width, boat.height);
     } else if (boat.direction === right) {
         // Draw right sprite
-        CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, boat.x, boat.y - boat.height, boat.width, boat.height);
+        CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, 
+            boat.x, boat.y - boat.height, boat.width, boat.height);
     }
 }
 

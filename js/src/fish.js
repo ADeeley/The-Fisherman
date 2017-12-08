@@ -63,8 +63,8 @@ function Fish(x, y, width, height, sprite, species) {
 
     this.draw = () => {
         if (this.direction === right) {
-            CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
-                          this.width, this.height);
+            CTX.drawImage(sprite, this.width, 0, this.width, this.height,
+                this.x, this.y, this.width, this.height);
         } else {
             CTX.drawImage(sprite, 0, 0, this.width, this.height, this.x, this.y,
                           this.width, this.height);
