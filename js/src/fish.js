@@ -4,7 +4,8 @@ const utilsModule = require('./utils.js');
 const CTX = utilsModule.CTX;
 const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
-
+const left = MYAPP.left;
+const right = MYAPP.right;
 
 /**
  * Fish constructor function
@@ -13,11 +14,9 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} width The widthidth of the fish
  * @param {Number} height The height of the fish
  * @param {Image} sprite A sprite image object
+ * @param {String} species The species of the fish
  */
 function Fish(x, y, width, height, sprite, species) {
-    let 
-        right = 1,
-        left = -1;
     this.direction = 1;
     this.x = x;
     this.y = y;
@@ -26,23 +25,10 @@ function Fish(x, y, width, height, sprite, species) {
     this.caught = false;
     this.species = species,
 
-    this._hookedY = function() {
-        return MYAPP.boat.y + MYAPP.hook.getRopeLen();
+    this._followHookCoordinates = function() {
+        this.y = MYAPP.boat.y + MYAPP.hook.getRopeLen();
+        this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
     };
-
-    this._hookedX = function() {
-        return MYAPP.boat.getX() + MYAPP.boat.width/3;
-    };
-    /*
-
-    this._swim = function() {
-        if (direction === right) {
-            this.x++;
-        } else if (direction === left) {
-            this.x--;
-        }
-    };
-    */
 
     this._randomDirectionChange = function() {
         if (this.x < 5 || this.x > CANVAS.width - 6) {
@@ -64,14 +50,11 @@ function Fish(x, y, width, height, sprite, species) {
     };
 
     this.move = () => {
-        // Swim the fish in the specified directionection
         if (this.caught) {
-            this.y = this._hookedY();
-            this.x = this._hookedX();
+            this._followHookCoordinates();
             console.log('Raising fishie!');
         } else if (MYAPP.withinCanvasBounds(this)) {
-        //    this._swim();
-        MYAPP.moveInGivenDirection(this, this.direction);
+            MYAPP.moveInGivenDirection(this, this.direction);
             this._randomDirectionChange();
         } else {
             this._aboutTurn();
