@@ -596,10 +596,21 @@ goodFishSprite.src = 'img/goldfish.png';
  * @param {Number} max The maximum coordinate value
  * @return {Number} An integer coordinate.
  */
-function generateRandomCoordinate(max) {
+function _generateRandomCoordinate(max) {
     return Math.floor(Math.random() * max);
 };
 
+/**
+ * Only adds points for good fish, otherwise minuses points.
+ * @param {Fish} hooked The fish attached to the hook.
+ */
+function _addFishToScore(hooked) {
+    if (hooked.species === 'good') {
+        MYAPP.game.incrementScore();
+    } else {
+        MYAPP.game.decrementScore();
+    }
+};
 /**
  * Adds fish to the fish array.
  * @param {Number} n The number of fish to populate to the array.
@@ -608,8 +619,8 @@ function generateRandomCoordinate(max) {
  */
 function populateArray(n, sprite, species) {
     for (i = 0; i < n; i++) {
-        x = generateRandomCoordinate(xDelta);
-        y = generateRandomCoordinate(yDelta) + seaLevel;
+        x = _generateRandomCoordinate(xDelta);
+        y = _generateRandomCoordinate(yDelta) + seaLevel;
         fish.push(new Fish(x, y, width, height, sprite, species));
     }
 }
@@ -640,8 +651,7 @@ function removeFish() {
         if (fish[i].caught) {
             fish.splice(i, 1);
             console.log('Sliced fish array');
-            // Add check for evil fish to decrement score.
-            MYAPP.game.incrementScore();
+            _addFishToScore(fish[i]);
         }
     }
 };
