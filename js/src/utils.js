@@ -4,6 +4,8 @@ const collisionModule = require('./collisionDetection.js');
 const CANVAS = document.getElementById('myCanvas'),
     CTX = CANVAS.getContext('2d'),
     MYAPP = {
+        left: -1,
+        right: 1,
         keyDown: {
             left: false,
             right: false,
@@ -40,11 +42,17 @@ MYAPP.stateToVictory = () => {
 };
 
 MYAPP.withinCanvasBounds = (obj) => {
-    if (obj.x > 0 && obj.x < CANVAS.width - obj.width) {
+    if (obj.x >= 0 && obj.x <= CANVAS.width - obj.width) {
         return true;
     };
     return false;
-}
+};
+
+MYAPP.moveInGivenDirection = (obj, direction) => {
+    if (MYAPP.withinCanvasBounds(obj)) {
+        obj.x += direction;
+    }
+};
 
 module.exports = {
     MYAPP: MYAPP,

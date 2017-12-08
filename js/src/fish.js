@@ -15,9 +15,10 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Image} sprite A sprite image object
  */
 function Fish(x, y, width, height, sprite, species) {
-    let direction = 1,
+    let 
         right = 1,
         left = -1;
+    this.direction = 1;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -32,6 +33,7 @@ function Fish(x, y, width, height, sprite, species) {
     this._hookedX = function() {
         return MYAPP.boat.getX() + MYAPP.boat.width/3;
     };
+    /*
 
     this._swim = function() {
         if (direction === right) {
@@ -40,23 +42,24 @@ function Fish(x, y, width, height, sprite, species) {
             this.x--;
         }
     };
+    */
 
     this._randomDirectionChange = function() {
         if (this.x < 5 || this.x > CANVAS.width - 6) {
             return;
         }
         if (Math.random() > 0.99) {
-            direction *= left;
+            this.direction *= left;
         }
     };
 
     this._aboutTurn = function() {
-        if (direction === right) {
+        if (this.direction === right) {
             this.x--;
-            direction = left;
-        } else if (direction === left) {
+            this.direction = left;
+        } else if (this.direction === left) {
             this.x++;
-            direction = right;
+            this.direction = right;
         }
     };
 
@@ -67,7 +70,8 @@ function Fish(x, y, width, height, sprite, species) {
             this.x = this._hookedX();
             console.log('Raising fishie!');
         } else if (MYAPP.withinCanvasBounds(this)) {
-            this._swim();
+        //    this._swim();
+        MYAPP.moveInGivenDirection(this, this.direction);
             this._randomDirectionChange();
         } else {
             this._aboutTurn();
@@ -75,7 +79,7 @@ function Fish(x, y, width, height, sprite, species) {
     };
 
     this.draw = () => {
-        if (direction === right) {
+        if (this.direction === right) {
             CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
                           this.width, this.height);
         } else {

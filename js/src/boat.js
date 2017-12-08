@@ -3,8 +3,8 @@ const utilsModule = require('./utils.js'),
 CTX = utilsModule.CTX,
 CANVAS = utilsModule.CANVAS,
 MYAPP = utilsModule.MYAPP;
-const left = -1;
-const right = 1;
+const left = MYAPP.left;
+const right = MYAPP.right;
 
 // Boat sprite setup
 
@@ -41,14 +41,6 @@ function draw() {
         CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, boat.x, boat.y - boat.height, boat.width, boat.height);
     }
 }
-/**
- * Sails the ship in the direction it is pointed
- */
-function _sailInGivenDirection() {
-    if (MYAPP.withinCanvasBounds(boat)) {
-        boat.x += boat.direction;
-    }
-}
 
 /**
  * Moves the boat around the screen according to the direction and
@@ -59,12 +51,12 @@ function move() {
         if (boat.direction !== left) {
             boat.direction = left;
         }
-        _sailInGivenDirection();
+        MYAPP.moveInGivenDirection(boat, boat.direction);
     } else if (MYAPP.keyDown.right) {
         if (boat.direction !== right) {
             boat.direction = right;
         }
-        _sailInGivenDirection();
+        MYAPP.moveInGivenDirection(boat, boat.direction);
     }
 }
 

@@ -4,8 +4,8 @@ const utilsModule = require('./utils.js'),
 CTX = utilsModule.CTX,
 CANVAS = utilsModule.CANVAS,
 MYAPP = utilsModule.MYAPP;
-const left = -1;
-const right = 1;
+const left = MYAPP.left;
+const right = MYAPP.right;
 
 // Boat sprite setup
 
@@ -42,14 +42,6 @@ function draw() {
         CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, boat.x, boat.y - boat.height, boat.width, boat.height);
     }
 }
-/**
- * Sails the ship in the direction it is pointed
- */
-function _sailInGivenDirection() {
-    if (MYAPP.withinCanvasBounds(boat)) {
-        boat.x += boat.direction;
-    }
-}
 
 /**
  * Moves the boat around the screen according to the direction and
@@ -60,12 +52,12 @@ function move() {
         if (boat.direction !== left) {
             boat.direction = left;
         }
-        _sailInGivenDirection();
+        MYAPP.moveInGivenDirection(boat, boat.direction);
     } else if (MYAPP.keyDown.right) {
         if (boat.direction !== right) {
             boat.direction = right;
         }
-        _sailInGivenDirection();
+        MYAPP.moveInGivenDirection(boat, boat.direction);
     }
 }
 
@@ -148,9 +140,10 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Image} sprite A sprite image object
  */
 function Fish(x, y, width, height, sprite, species) {
-    let direction = 1,
+    let 
         right = 1,
         left = -1;
+    this.direction = 1;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -165,6 +158,7 @@ function Fish(x, y, width, height, sprite, species) {
     this._hookedX = function() {
         return MYAPP.boat.getX() + MYAPP.boat.width/3;
     };
+    /*
 
     this._swim = function() {
         if (direction === right) {
@@ -173,23 +167,24 @@ function Fish(x, y, width, height, sprite, species) {
             this.x--;
         }
     };
+    */
 
     this._randomDirectionChange = function() {
         if (this.x < 5 || this.x > CANVAS.width - 6) {
             return;
         }
         if (Math.random() > 0.99) {
-            direction *= left;
+            this.direction *= left;
         }
     };
 
     this._aboutTurn = function() {
-        if (direction === right) {
+        if (this.direction === right) {
             this.x--;
-            direction = left;
-        } else if (direction === left) {
+            this.direction = left;
+        } else if (this.direction === left) {
             this.x++;
-            direction = right;
+            this.direction = right;
         }
     };
 
@@ -200,7 +195,8 @@ function Fish(x, y, width, height, sprite, species) {
             this.x = this._hookedX();
             console.log('Raising fishie!');
         } else if (MYAPP.withinCanvasBounds(this)) {
-            this._swim();
+        //    this._swim();
+        MYAPP.moveInGivenDirection(this, this.direction);
             this._randomDirectionChange();
         } else {
             this._aboutTurn();
@@ -208,7 +204,7 @@ function Fish(x, y, width, height, sprite, species) {
     };
 
     this.draw = () => {
-        if (direction === right) {
+        if (this.direction === right) {
             CTX.drawImage(sprite, this.width, 0, this.width, this.height, this.x, this.y,
                           this.width, this.height);
         } else {
@@ -697,6 +693,8 @@ const collisionModule = require('./collisionDetection.js');
 const CANVAS = document.getElementById('myCanvas'),
     CTX = CANVAS.getContext('2d'),
     MYAPP = {
+        left: -1,
+        right: 1,
         keyDown: {
             left: false,
             right: false,
@@ -733,11 +731,17 @@ MYAPP.stateToVictory = () => {
 };
 
 MYAPP.withinCanvasBounds = (obj) => {
-    if (obj.x > 0 && obj.x < CANVAS.width - obj.width) {
+    if (obj.x >= 0 && obj.x <= CANVAS.width - obj.width) {
         return true;
     };
     return false;
-}
+};
+
+MYAPP.moveInGivenDirection = (obj, direction) => {
+    if (MYAPP.withinCanvasBounds(obj)) {
+        obj.x += direction;
+    }
+};
 
 module.exports = {
     MYAPP: MYAPP,
