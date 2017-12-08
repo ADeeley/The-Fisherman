@@ -93,16 +93,21 @@ function gameLoop() {
  * The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
  */
 function mainLoop() {
-    if (MYAPP.state === 'startScreen') {
+    switch (MYAPP.state) {
+    case 'startScreen':
         MYAPP.game.startScreen();
-    } else if (MYAPP.state === 'gameLoop') {
+        break;
+    case 'gameLoop':
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         gameLoop();
-    } else if (MYAPP.state === 'death') {
+        break;
+    case 'death':
         MYAPP.game.deathScreen();
-    } else if (MYAPP.state === 'victory') {
+        break;
+    case 'victory':
         MYAPP.game.victoryScreen();
-    } else {
+        break;
+    default:
         console.log('Main loop state error: ' + MYAPP.state);
     }
 };

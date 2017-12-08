@@ -11,8 +11,8 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-let numGoodFish = 50,
-    numEvilFish = 20,
+let numGoodFish = 1,
+    numEvilFish = 0,
     goodFishSprite = new Image(),
     evilFishSprite = new Image(),
     fish = [],

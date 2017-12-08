@@ -538,16 +538,21 @@ function gameLoop() {
  * The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
  */
 function mainLoop() {
-    if (MYAPP.state === 'startScreen') {
+    switch (MYAPP.state) {
+    case 'startScreen':
         MYAPP.game.startScreen();
-    } else if (MYAPP.state === 'gameLoop') {
+        break;
+    case 'gameLoop':
         CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
         gameLoop();
-    } else if (MYAPP.state === 'death') {
+        break;
+    case 'death':
         MYAPP.game.deathScreen();
-    } else if (MYAPP.state === 'victory') {
+        break;
+    case 'victory':
         MYAPP.game.victoryScreen();
-    } else {
+        break;
+    default:
         console.log('Main loop state error: ' + MYAPP.state);
     }
 };
@@ -569,8 +574,8 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-let numGoodFish = 50,
-    numEvilFish = 20,
+let numGoodFish = 1,
+    numEvilFish = 0,
     goodFishSprite = new Image(),
     evilFishSprite = new Image(),
     fish = [],
