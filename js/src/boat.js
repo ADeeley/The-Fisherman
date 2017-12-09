@@ -1,94 +1,71 @@
 'use strict';
-const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
-const MYAPP = utilsModule.MYAPP;
+const utilsModule = require('./utils.js'),
+CTX = utilsModule.CTX,
+CANVAS = utilsModule.CANVAS,
+MYAPP = utilsModule.MYAPP;
+const left = MYAPP.left;
+const right = MYAPP.right;
+
+// Boat sprite setup
+
+
+let boat = {
+    x: CANVAS.width/2,
+    y: CANVAS.height/2,
+    speed: 3,
+    width: 50,
+    height: 30,
+    // 0 represents left, 1 represents right
+    direction: left,
+    },
+    boatSprite = new Image();
+
+boatSprite.src = 'img/boat.png';
+/**
+ * Provides X as a reference, instead of a number literal.
+ * @return {Number} The x coordinate of boat.
+ */
+function getX() {
+    return boat.x;
+}
+/**
+ * Draws the boat to the CANVAS.
+ */
+function draw() {
+    if (boat.direction === left) {
+        // Draw left sprite
+        CTX.drawImage(boatSprite, 0, 0, boat.width, boat.height,
+            boat.x, boat.y - boat.height, boat.width, boat.height);
+    } else if (boat.direction === right) {
+        // Draw right sprite
+        CTX.drawImage(boatSprite, 50, 0, boat.width, boat.height, 
+            boat.x, boat.y - boat.height, boat.width, boat.height);
+    }
+}
 
 /**
- *  Constructor function for the boat object.
- * @return {Boat} A boat object with only public properties and methods
- * visible.
+ * Moves the boat around the screen according to the direction and
+ * buttons pressed.
  */
-const Boat = (function() {
-    let x = canvas.width/2,
-        y = canvas.height/2,
-        speed = 3,
-        w = 50,
-        h = 30,
-        // 0 represents left, 1 represents right
-        direction = 0,
-        // Boat sprite setup
-        boatSprite = new Image();
-        boatSprite.src = 'img/boat.png';
-
-    /**
-     * Getter for the speed of the boat,
-     * @return {Number} The speed of the boat.
-     */
-    function getSpeed() {
-        return speed;
-    }
-    /**
-     * Getter for the x coordinate of the boat,
-     * @return {Number} The x coordinate of the boat.
-     */
-    function getX() {
-        return x;
-    }
-    /**
-     * Getter for the y coordinate of the boat,
-     * @return {Number} The y coordinate of the boat.
-     */
-    function getY() {
-        return y;
-    }
-    /**
-     * Draws the boat to the canvas.
-     */
-    function draw() {
-        if (direction === 0) {
-            // Draw left sprite
-            ctx.drawImage(boatSprite, 0, 0, w, h,
-                    x, y - h, w, h);
-        } else if (direction === 1) {
-            // Draw right sprite
-            ctx.drawImage(boatSprite, 50, 0, w, h,
-                    x, y - h, w, h);
+function move() {
+    if (MYAPP.keyDown.left) {
+        if (boat.direction !== left) {
+            boat.direction = left;
         }
-    };
-
-    /**
-     * Moves the boat in the direction dictated by the arrow keys.
-     */
-    function move() {
-        if (MYAPP.keyDown.left && x >= 0) {
-        x--;
-        // console.log('left');
-            if (direction !== 0) {
-                direction = 0;
-            }
-        } else if (MYAPP.keyDown.right && x <= canvas.width - w) {
-        x++;
-            if (direction !== 1) {
-                direction = 1;
-            }
+        MYAPP.moveInGivenDirection(boat, boat.direction);
+    } else if (MYAPP.keyDown.right) {
+        if (boat.direction !== right) {
+            boat.direction = right;
         }
-    };
-
-    return {
-        getX: getX,
-        getY: getY,
-        speed: speed,
-        w: w,
-        h: h,
-        direction: direction,
-        getSpeed: getSpeed,
-        draw: draw,
-        move: move,
-        boatSprite: boatSprite,
-    };
-})();
+        MYAPP.moveInGivenDirection(boat, boat.direction);
+    }
+}
 
 module.exports = {
-    Boat: Boat,
+    getX: getX,
+    y: boat.y,
+    width: boat.width,
+    height: boat.height,
+    draw: draw,
+    move: move,
 };

@@ -1,61 +1,73 @@
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
+const left = MYAPP.left;
+const right = MYAPP.right;
 
 /**
  * Fish constructor function
  * @param {Number} x The X coordinate
  * @param {Number} y The Y coordinate
- * @param {Number} w The width of the fish
- * @param {Number} h The height of the fish
+ * @param {Number} width The widthidth of the fish
+ * @param {Number} height The height of the fish
  * @param {Image} sprite A sprite image object
+ * @param {String} species The species of the fish
  */
-function Fish(x, y, w, h, sprite) {
-    let dir = 1;
+function Fish(x, y, width, height, sprite, species) {
+    this.direction = 1;
     this.x = x;
     this.y = y;
-    this.w = w;
-    this.h = h;
+    this.width = width;
+    this.height = height;
     this.caught = false;
+    this.species = species,
 
-    this.move = function() {
-        // Swim the fish in the specified direction
-        if (this.caught) {
-            this.y = MYAPP.boat.getY() + MYAPP.hook.height;
-            this.x = MYAPP.boat.getX() + MYAPP.boat.w/3;
-            console.log('Raising fishie!');
+    this._followHookCoordinates = function() {
+        this.y = MYAPP.boat.y + MYAPP.hook.getRopeLen();
+        this.x = MYAPP.boat.getX() + MYAPP.boat.width/3;
+    };
+
+    this._randomDirectionChange = function() {
+        if (this.x < 5 || this.x > CANVAS.width - 6) {
+            return;
         }
-        if (this.x >= 0 && this.x <= canvas.width - this.w) {
-            if (dir === 1) {
-                this.x++;
-            } else if (dir === -1) {
-                this.x--;
-            }
-
-            // Randomly change direction
-            if (Math.random() > 0.99) {
-                dir *= -1;
-            }
-        } else {
-            dir *= -1;
-            if (dir === 1) {
-                this.x += 2;
-            } else if (dir === -1) {
-                this.x -= 2;
-            }
+        if (Math.random() > 0.99) {
+            this.direction *= left;
         }
     };
 
-    this.draw = function() {
-        if (dir === 1) {
-            ctx.drawImage(sprite, this.w, 0, this.w, this.h, this.x, this.y,
-                          this.w, this.h);
+    this._aboutTurn = function() {
+        if (this.direction === right) {
+            this.x--;
+            this.direction = left;
+        } else if (this.direction === left) {
+            this.x++;
+            this.direction = right;
+        }
+    };
+
+    this.move = () => {
+        if (this.caught) {
+            this._followHookCoordinates();
+            console.log('Raising fishie!');
+        } else if (MYAPP.withinCanvasBounds(this)) {
+            MYAPP.moveInGivenDirection(this, this.direction);
+            this._randomDirectionChange();
         } else {
-            ctx.drawImage(sprite, 0, 0, this.w, this.h, this.x, this.y,
-                          this.w, this.h);
+            this._aboutTurn();
+        }
+    };
+
+    this.draw = () => {
+        if (this.direction === right) {
+            CTX.drawImage(sprite, this.width, 0, this.width, this.height,
+                this.x, this.y, this.width, this.height);
+        } else {
+            CTX.drawImage(sprite, 0, 0, this.width, this.height, this.x, this.y,
+                          this.width, this.height);
         }
         this.move();
     };

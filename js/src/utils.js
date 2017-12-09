@@ -1,44 +1,64 @@
 'use strict';
 
-const canvas = document.getElementById('myCanvas'),
-    ctx = canvas.getContext('2d'),
+const collisionModule = require('./collisionDetection.js');
+const CANVAS = document.getElementById('myCanvas'),
+    CTX = CANVAS.getContext('2d'),
     MYAPP = {
-    keyDown: {
-        left: false,
-        right: false,
-    },
-    keys: {
-        SPACE: 32,
-        A_KEY: 65,
-        D_Key: 68,
-        LEFT_KEY: 37,
-        RIGHT_KEY: 39,
-    },
-    state: 'startScreen',
+        left: -1,
+        right: 1,
+        seaLevel: (() => {
+            return CANVAS.height / 2;
+        })(),
+        keyDown: {
+            left: false,
+            right: false,
+        },
+        keys: {
+            SPACE: 32,
+            A_KEY: 65,
+            D_KEY: 68,
+            LEFT_KEY: 37,
+            RIGHT_KEY: 39,
+        },
+        state: 'startScreen',
     game: null,
     boat: null,
     hook: null,
     shoal: null,
+    collisionDetected: collisionModule.collisionDetected,
 };
 
-MYAPP.stateToStartScreen = function() {
+MYAPP.stateToStartScreen = () => {
     MYAPP.state = 'startScreen';
 };
 
-MYAPP.stateToStartGame = function() {
+MYAPP.stateToStartGame = () => {
     MYAPP.state = 'gameLoop';
 };
 
-MYAPP.stateToDeath = function() {
+MYAPP.stateToDeath = () => {
     MYAPP.state = 'death';
 };
 
-MYAPP.stateToVictory = function() {
+MYAPP.stateToVictory = () => {
     MYAPP.state = 'victory';
+};
+
+MYAPP.withinCanvasBounds = (obj) => {
+    if (obj.x >= 0 && obj.x <= CANVAS.width - obj.width) {
+        return true;
+    };
+    return false;
+};
+
+MYAPP.moveInGivenDirection = (obj, direction) => {
+    if (MYAPP.withinCanvasBounds(obj)) {
+        obj.x += direction;
+    }
 };
 
 module.exports = {
     MYAPP: MYAPP,
-    canvas: canvas,
-    ctx: ctx,
+    CANVAS: CANVAS,
+    CTX: CTX,
 };

@@ -1,13 +1,13 @@
 'use strict';
 
-const Game = require('./game.js').Game;
-const Boat = require('./boat.js').Boat;
-console.log(Boat);
-const Hook = require('./hook.js').Hook;
-const Shoal = require('./shoal.js').Shoal;
+const debugModule = require('./debugControls.js');
+const game = require('./game.js');
+const boat = require('./boat.js');
+const hook = require('./hook.js');
+const shoal = require('./shoal.js');
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
 
 window.addEventListener('keydown', keyDownEventHandler, false);
@@ -17,10 +17,11 @@ window.addEventListener('keyup', keyUpEventHandler, false);
  * Instantiates all the game objects.
  */
 function setup() {
-    MYAPP.game = new Game();
-    MYAPP.boat = Boat;
-    MYAPP.hook = new Hook();
-    MYAPP.shoal = new Shoal(3, 4);
+    MYAPP.game = game;
+    MYAPP.boat = boat;
+    MYAPP.hook = hook;
+    MYAPP.shoal = shoal;
+    MYAPP.shoal.init();
 };
 
 /**
@@ -29,20 +30,29 @@ function setup() {
  * @param {Number} e The key that was pressed.
  */
 function keyDownEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.SPACE) {
-        if (MYAPP.state === 'startScreen') {
+    switch (e.keyCode) {
+    case MYAPP.keys.SPACE:
+        switch (MYAPP.state) {
+        case 'startScreen':
+            MYAPP.game.resetScore();
+            MYAPP.shoal.init();
             MYAPP.stateToStartGame();
-        } else if (MYAPP.state === 'gameLoop') {
+            break;
+        case 'gameLoop':
             MYAPP.hook.drop();
-        } else if (MYAPP.state === 'victory') {
+            break;
+        case 'victory':
             MYAPP.stateToStartScreen();
+            break;
         }
-    } else if (e.keyCode === MYAPP.keys.A_KEY && MYAPP.state === 'gameLoop') {
+        break;
+    case MYAPP.keys.A_KEY:
             MYAPP.keyDown.left = true;
-        } else if (e.keyCode === MYAPP.keys.D_Key &&
-            MYAPP.state === 'gameLoop') {
-                MYAPP.keyDown.right = true;
-        }
+        break;
+    case MYAPP.keys.D_KEY:
+            MYAPP.keyDown.right = true;
+        break;
+    }
 };
 
 /**
@@ -53,28 +63,51 @@ function keyDownEventHandler(e) {
  * @param {Number} e The key that was pressed.
  */
 function keyUpEventHandler(e) {
-    if (e.keyCode === MYAPP.keys.A_KEY) {
+    switch (e.keyCode) {
+    case MYAPP.keys.A_KEY:
         MYAPP.keyDown.left = false;
-    } else if (e.keyCode === MYAPP.keys.D_Key) {
+        break;
+    case MYAPP.keys.D_KEY:
         MYAPP.keyDown.right = false;
+        break;
     }
+};
+
+/**
+ * Handles the in game functions and draws everything to the canvas.
+ */
+function gameLoop() {
+    MYAPP.game.drawBackground();
+    MYAPP.game.drawScore();
+    MYAPP.boat.draw();
+    MYAPP.boat.move();
+    MYAPP.shoal.drawAll();
+    MYAPP.hook.update();
+    // End the game if no good fish remain
+    if (MYAPP.shoal.allGoodFishCaught()) {
+        MYAPP.stateToVictory();
+    };
 };
 
 /**
  * The main loop - checks the MYAPP.stateHandler and runs the appropriate loop
  */
 function mainLoop() {
-    if (MYAPP.state === 'startScreen') {
+    switch (MYAPP.state) {
+    case 'startScreen':
         MYAPP.game.startScreen();
-        setup();
-    } else if (MYAPP.state === 'gameLoop') {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        MYAPP.game.gameLoop();
-    } else if (MYAPP.state === 'death') {
+        break;
+    case 'gameLoop':
+        CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        gameLoop();
+        break;
+    case 'death':
         MYAPP.game.deathScreen();
-    } else if (MYAPP.state === 'victory') {
+        break;
+    case 'victory':
         MYAPP.game.victoryScreen();
-    } else {
+        break;
+    default:
         console.log('Main loop state error: ' + MYAPP.state);
     }
 };

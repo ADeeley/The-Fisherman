@@ -2,8 +2,9 @@
 
 const utilsModule = require('./utils.js');
 const Fish = require('./fish.js').Fish;
-const canvas = utilsModule.canvas;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
+const seaLevel = MYAPP.seaLevel;
 
 /**
  * Stores the evil fish array and good fish array and associated
@@ -11,73 +12,121 @@ const MYAPP = utilsModule.MYAPP;
  * @param {Number} numGoodFish The number of good fish required
  * @param {Number} numEvilFish The number of evil fish required
  */
-function Shoal(numGoodFish, numEvilFish) {
-    let goodFishSprite = new Image(),
-        evilFishSprite = new Image(),
-        i = 0,
-        x = null,
-        y = null,
-        xDelta = canvas.width-30,
-        yDelta = (canvas.height/2-20);
+let numGoodFish = 30,
+    numEvilFish = 15,
+    goodFishSprite = new Image(),
+    evilFishSprite = new Image(),
+    fish = [],
+    i = 0,
+    x = null,
+    y = null,
+    width = 30,
+    height = 20,
+    xDelta = CANVAS.width - width,
+    yDelta = (CANVAS.height / 2 - height);
 
-    evilFishSprite.src = 'img/evilfish.png';
-    goodFishSprite.src = 'img/goldfish.png';
+evilFishSprite.src = 'img/evilfish.png';
+goodFishSprite.src = 'img/goldfish.png';
 
-    this.fish = (() => {
-        let fishArr = [];
+/**
+ * Generates a random integer value between 0 and max.
+ * @param {Number} max The maximum coordinate value
+ * @return {Number} An integer coordinate.
+ */
+function _generateRandomCoordinate(max) {
+    return Math.floor(Math.random() * max);
+};
 
-        for (i; i < numGoodFish; i++) {
-            x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            fishArr.push(new Fish(x, y, 30, 20, goodFishSprite));
+/**
+ * Only adds points for good fish, otherwise minuses points.
+ * @param {Fish} hooked The fish attached to the hook.
+ */
+function _addFishToScore(hooked) {
+    if (hooked.species === 'good') {
+        MYAPP.game.incrementScore();
+    } else {
+        MYAPP.game.decrementScore();
+    }
+};
+/**
+ * Adds fish to the fish array.
+ * @param {Number} n The number of fish to populate to the array.
+ * @param {Image} sprite The image to display to the canvas
+ * @param {String} species The string representing the fishe's type
+ */
+function populateArray(n, sprite, species) {
+    for (i = 0; i < n; i++) {
+        x = _generateRandomCoordinate(xDelta);
+        y = _generateRandomCoordinate(yDelta) + seaLevel;
+        fish.push(new Fish(x, y, width, height, sprite, species));
+    }
+}
+/**
+ * Initialises the array with the specified number of fish.
+ * Resets the array if called again.
+ */
+function init() {
+    fish = [];
+    populateArray(numGoodFish, goodFishSprite, 'good');
+    populateArray(numEvilFish, evilFishSprite, 'evil');
+};
+
+/**
+ * Draws all of the fish in fish array to the canvas.
+ */
+function drawAll() {
+    for (i = 0; i < fish.length; i++) {
+        fish[i].draw();
+    }
+};
+
+/**
+ * Removes a single fish from the fish array.
+ */
+function removeFish() {
+    for (i = 0; i < fish.length; i++) {
+        if (fish[i].caught) {
+            fish.splice(i, 1);
+            console.log('Sliced fish array');
+            _addFishToScore(fish[i]);
         }
+    }
+};
 
-        return fishArr;
-    })();
-
-    this.evilFish = (() => {
-        let evilFishArr = [];
-
-        for (i; i < numEvilFish; i++) {
-            x = Math.floor(Math.random() * xDelta),
-            y = Math.floor(Math.random() * yDelta) + canvas.height/2;
-            evilFishArr.push(new Fish(x, y, 30, 20, evilFishSprite));
+/**
+ * Returns true if all the good fish in the array have been removed.
+ * @return {Boolean} The result
+ */
+function allGoodFishCaught() {
+    for (i = 0; i < fish.length; i++) {
+        if (fish[i].species === 'good') {
+            return false;
         }
+    }
+    return true;
+};
 
-        return evilFishArr;
-    })();
+/**
+ * @return {Number} The length of the fish array.
+ */
+function getShoalLen() {
+    return fish.length;
+}
 
-
-    this.drawAll = function() {
-        i = 0;
-        for (i; i < this.fish.length; i++) {
-            this.fish[i].draw();
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            this.evilFish[i].draw();
-        }
-    };
-
-    this.removeFish = function() {
-        i = 0;
-
-        for (i; i < this.fish.length; i++) {
-            if (this.fish[i].caught) {
-                this.fish.splice(i, 1);
-                console.log('Sliced fish array');
-                MYAPP.game.incrementScore();
-            }
-        }
-        for (i = 0; i < this.evilFish.length; i++) {
-            if (this.evilFish[i].caught) {
-                this.evilFish.splice(i, 1);
-                console.log('Sliced fish array');
-                MYAPP.game.decrementScore();
-            }
-        }
-    };
+/**
+ * @param {Number} n index of the fish required;
+ * @return {Fish} The fish array.
+ */
+function getFish(n) {
+    return fish[n];
 }
 
 module.exports = {
-    Shoal: Shoal,
+    init: init,
+    drawAll: drawAll,
+    removeFish: removeFish,
+    allGoodFishCaught: allGoodFishCaught,
+    getShoalLen: getShoalLen,
+    getFish: getFish,
+
 };

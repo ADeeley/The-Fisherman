@@ -1,88 +1,117 @@
 'use strict';
 
 const utilsModule = require('./utils.js');
-const ctx = utilsModule.ctx;
-const canvas = utilsModule.canvas;
+const CTX = utilsModule.CTX;
+const CANVAS = utilsModule.CANVAS;
 const MYAPP = utilsModule.MYAPP;
-const gradient = ctx.createLinearGradient(0, canvas.height/2, 0, 500);
+const gradient = CTX.createLinearGradient(0, CANVAS.height/2, 0, 500);
+
 gradient.addColorStop(0, '#1658EA');
 gradient.addColorStop(1, 'black');
 
+let largeFont = '40pt Ariel',
+    mediumFont = '20pt Ariel',
+    score = 0,
+    midLeft = CANVAS.height/2 - 5;
+
+
 /**
- * Game constructor function
+ * Getter for the score.
+ * @return {Number} the current score.
  */
-function Game() {
-    let largeFont = '40pt Ariel',
-        mediumFont = '20pt Ariel',
-        score = 0;
+function getScore() {
+    return score;
+};
 
-    this.getScore = function() {
-        return score;
-    };
+/**
+ * Increments the score.
+ */
+function incrementScore() {
+    score++;
+};
 
-    this.incrementScore = function() {
-        score++;
-    };
+/**
+ * Decrements the score.
+ */
+function decrementScore() {
+    score--;
+};
 
-    this.decrementScore = function() {
-        score--;
-    };
+/**
+ * Resets the score to 0.
+ */
+function resetScore() {
+    score = 0;
+};
 
-    this.startScreen = function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        this.drawBackground();
-        this.drawTitle();
-        MYAPP.boat.draw();
-    };
+/**
+ * Draws the startScreen to the canvas.
+ */
+function startScreen() {
+    CTX.clearRect(0, 0, CANVAS.width, CANVAS.height);
+    drawBackground();
+    drawTitle();
+    MYAPP.boat.draw();
+};
 
-    this.gameLoop = function() {
-        this.drawBackground();
-        this.drawScore();
-        MYAPP.boat.draw();
-        MYAPP.boat.move();
-        MYAPP.shoal.drawAll();
-        MYAPP.hook.draw();
-        // End the game if no good fish remain
-        if (MYAPP.shoal.fish.length == 0) {
-            MYAPP.stateToVictory();
-        };
-    };
+/**
+ * Draws the death screen to the canvas.
+ */
+function deathScreen() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You died!', CANVAS.width/4, CANVAS.height/4);
+    drawBackground();
+};
 
-    this.deathScreen = function() {
-        ctx.font = largeFont;
-        ctx.fillStyle = 'white';
-        ctx.fillText('You died!', canvas.width/4, canvas.height/4);
-        this.drawBackground();
-    };
+/**
+ * Draws the victory screen to the canvas.
+ */
+function victoryScreen() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('You won!', CANVAS.width/4, CANVAS.height/4);
+};
 
-    this.victoryScreen = function() {
-        ctx.font = largeFont;
-        ctx.fillStyle = 'white';
-        ctx.fillText('You won!', canvas.width/4, canvas.height/4);
-    };
+/**
+ * Draws the standard background to the canvas.
+ */
+function drawBackground() {
+    CTX.beginPath();
+    CTX.rect(0, CANVAS.height/2, CANVAS.width, CANVAS.height);
+    CTX.fillStyle = gradient;
+    CTX.fill();
+    CTX.closePath();
+};
 
-    this.drawBackground = function() {
-        ctx.beginPath();
-        ctx.rect(0, canvas.height/2, canvas.width, canvas.height);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        ctx.closePath();
-    };
+/**
+ * Draws the title to the canvas.
+ */
+function drawTitle() {
+    CTX.font = largeFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText('The', 20, midLeft);
+    CTX.fillText('Fisherman', 20, (CANVAS.height/2) + 40);
+};
 
-    this.drawTitle = function() {
-        ctx.font = largeFont;
-        ctx.fillStyle = 'white';
-        ctx.fillText('The', 20, canvas.height/2 - 5);
-        ctx.fillText('Fisherman', 20, (canvas.height/2) + 40);
-    };
-
-    this.drawScore = function() {
-        ctx.font = mediumFont;
-        ctx.fillStyle = 'white';
-        ctx.fillText(score, 20, 40);
-    };
-}
+/**
+ * Draws the score to the canvas.
+ */
+function drawScore() {
+    CTX.font = mediumFont;
+    CTX.fillStyle = 'white';
+    CTX.fillText(score, 20, 40);
+};
 
 module.exports = {
-    Game: Game,
+    getScore: getScore,
+    incrementScore: incrementScore,
+    decrementScore: decrementScore,
+    resetScore: resetScore,
+    startScreen: startScreen,
+    deathScreen: deathScreen,
+    victoryScreen: victoryScreen,
+    drawBackground: drawBackground,
+    drawTitle: drawTitle,
+    drawScore: drawScore,
 };

@@ -4,6 +4,7 @@ module.exports = {
         "ecmaVersion": 6
     },
     "rules": {
-        "one-var": 0
+        "one-var": 0,
+        "linebreak-style": ["error", "windows"]
     }
 };
