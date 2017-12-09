@@ -207,7 +207,7 @@ function Game() {
         MYAPP.boat.move();
         MYAPP.shoal.drawAll();
         MYAPP.hook.draw();
-        // End the MYAPP.game if no good fish remain
+        // End the game if no good fish remain
         if (MYAPP.shoal.fish.length == 0) {
             MYAPP.stateToVictory();
         };
